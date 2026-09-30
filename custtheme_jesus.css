@@ -118,14 +118,14 @@
   color: #e8e0d0;
 }
 
-/* Navbar */
+/* Navbar with angels (works with Nexus) */
 nav.navbar,
 .navbar.navbar-fixed-top,
 .navbar {
   position: relative !important;
   overflow: visible !important;
-  padding-left: 64px !important;
-  padding-right: 64px !important;
+  padding-left: 60px !important;
+  padding-right: 60px !important;
   background-image: linear-gradient(
     #1a1508cc 5%,
     #0c0a10e0 50%,
