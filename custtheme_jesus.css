@@ -1,9 +1,9 @@
 /* custtheme_jesus - adapted from custtheme_christmas (Nexus)
-   Two angels on left and right of the top banner
+   Two angels on left and right of the navbar
    Gold / white / soft blue heavenly palette
 */
 
-/* Chat header / top banner */
+/* Chat header (no angels) */
 #chatheader {
   position: relative;
   overflow: hidden;
@@ -13,46 +13,6 @@
   border-bottom: 1px solid rgba(212, 175, 55, 0.45);
   color: #f0e6c8;
   text-shadow: 0 0 2px #000, 0 0 6px rgba(255, 215, 120, 0.5);
-}
-
-/* Left angel */
-#chatheader::before {
-  content: "" !important;
-  position: absolute !important;
-  left: 6px !important;
-  top: 50% !important;
-  transform: translateY(-50%) !important;
-  width: 56px !important;
-  height: 56px !important;
-  background-image: url("https://cdn.jsdelivr.net/gh/jesus028-hash/cytube-themes@main/angel-left.png?v=3") !important;
-  background-size: contain !important;
-  background-repeat: no-repeat !important;
-  background-position: center !important;
-  opacity: 1 !important;
-  pointer-events: none !important;
-  z-index: 50 !important;
-  filter: drop-shadow(0 0 8px rgba(255, 215, 100, 0.7)) !important;
-  display: block !important;
-}
-
-/* Right angel (mirrored) */
-#chatheader::after {
-  content: "" !important;
-  position: absolute !important;
-  right: 6px !important;
-  top: 50% !important;
-  transform: translateY(-50%) scaleX(-1) !important;
-  width: 56px !important;
-  height: 56px !important;
-  background-image: url("https://cdn.jsdelivr.net/gh/jesus028-hash/cytube-themes@main/angel-left.png?v=3") !important;
-  background-size: contain !important;
-  background-repeat: no-repeat !important;
-  background-position: center !important;
-  opacity: 1 !important;
-  pointer-events: none !important;
-  z-index: 50 !important;
-  filter: drop-shadow(0 0 8px rgba(255, 215, 100, 0.7)) !important;
-  display: block !important;
 }
 
 #currenttitle {
@@ -158,7 +118,10 @@
   color: #e8e0d0;
 }
 
+/* Navbar with angels on left and right */
 .navbar {
+  position: relative;
+  overflow: visible;
   background-image: linear-gradient(
     #1a1508cc 5%,
     #0c0a10e0 50%,
@@ -168,6 +131,46 @@
   background-color: #12100acc;
   box-shadow: inset 0 2px 4px rgba(255, 230, 150, 0.15);
   border-bottom: 1px solid rgba(212, 175, 55, 0.25);
+}
+
+/* Left angel */
+.navbar::before {
+  content: "" !important;
+  position: absolute !important;
+  left: 6px !important;
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+  width: 56px !important;
+  height: 56px !important;
+  background-image: url("https://cdn.jsdelivr.net/gh/jesus028-hash/cytube-themes@main/angel-left.png?v=3") !important;
+  background-size: contain !important;
+  background-repeat: no-repeat !important;
+  background-position: center !important;
+  opacity: 1 !important;
+  pointer-events: none !important;
+  z-index: 50 !important;
+  filter: drop-shadow(0 0 8px rgba(255, 215, 100, 0.7)) !important;
+  display: block !important;
+}
+
+/* Right angel (mirrored) */
+.navbar::after {
+  content: "" !important;
+  position: absolute !important;
+  right: 6px !important;
+  top: 50% !important;
+  transform: translateY(-50%) scaleX(-1) !important;
+  width: 56px !important;
+  height: 56px !important;
+  background-image: url("https://cdn.jsdelivr.net/gh/jesus028-hash/cytube-themes@main/angel-left.png?v=3") !important;
+  background-size: contain !important;
+  background-repeat: no-repeat !important;
+  background-position: center !important;
+  opacity: 1 !important;
+  pointer-events: none !important;
+  z-index: 50 !important;
+  filter: drop-shadow(0 0 8px rgba(255, 215, 100, 0.7)) !important;
+  display: block !important;
 }
 
 .navbar-inverse .navbar-brand,
