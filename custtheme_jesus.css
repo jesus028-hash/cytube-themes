@@ -1,9 +1,9 @@
 /* custtheme_jesus - adapted from custtheme_christmas (Nexus)
-   Two angels on left and right of the navbar
+   Two angels on left and right of the top banner
    Gold / white / soft blue heavenly palette
 */
 
-/* Chat header (no angels) */
+/* Chat header / top banner */
 #chatheader {
   position: relative;
   overflow: hidden;
@@ -13,6 +13,46 @@
   border-bottom: 1px solid rgba(212, 175, 55, 0.45);
   color: #f0e6c8;
   text-shadow: 0 0 2px #000, 0 0 6px rgba(255, 215, 120, 0.5);
+}
+
+/* Left angel */
+#chatheader::before {
+  content: "" !important;
+  position: absolute !important;
+  left: 6px !important;
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+  width: 56px !important;
+  height: 56px !important;
+  background-image: url("https://cdn.jsdelivr.net/gh/jesus028-hash/cytube-themes@main/angel-left.png?v=3") !important;
+  background-size: contain !important;
+  background-repeat: no-repeat !important;
+  background-position: center !important;
+  opacity: 1 !important;
+  pointer-events: none !important;
+  z-index: 50 !important;
+  filter: drop-shadow(0 0 8px rgba(255, 215, 100, 0.7)) !important;
+  display: block !important;
+}
+
+/* Right angel (mirrored) */
+#chatheader::after {
+  content: "" !important;
+  position: absolute !important;
+  right: 6px !important;
+  top: 50% !important;
+  transform: translateY(-50%) scaleX(-1) !important;
+  width: 56px !important;
+  height: 56px !important;
+  background-image: url("https://cdn.jsdelivr.net/gh/jesus028-hash/cytube-themes@main/angel-left.png?v=3") !important;
+  background-size: contain !important;
+  background-repeat: no-repeat !important;
+  background-position: center !important;
+  opacity: 1 !important;
+  pointer-events: none !important;
+  z-index: 50 !important;
+  filter: drop-shadow(0 0 8px rgba(255, 215, 100, 0.7)) !important;
+  display: block !important;
 }
 
 #currenttitle {
@@ -33,7 +73,7 @@
 }
 
 #chat-footer {
-  background-image:
+  background-image: url("https://cdn.jsdelivr.net/gh/jesus028-hash/cytube-themes@main/angel-left.png?v=3") !important;
     linear-gradient(transparent 30%, #0006),
     radial-gradient(ellipse 100% 80% at 50% 120%, rgba(255, 215, 100, 0.15), transparent 60%),
     linear-gradient(180deg, #0a0a12, #12100a);
@@ -118,67 +158,16 @@
   color: #e8e0d0;
 }
 
-/* Navbar with angels (works with Nexus) */
-nav.navbar,
-.navbar.navbar-fixed-top,
 .navbar {
-  position: relative !important;
-  overflow: visible !important;
-  padding-left: 60px !important;
-  padding-right: 60px !important;
   background-image: linear-gradient(
     #1a1508cc 5%,
     #0c0a10e0 50%,
     #000000f5 51%,
     #000000cf 90%
   ) !important;
-  background-color: #12100acc !important;
+  background-color: #12100acc;
   box-shadow: inset 0 2px 4px rgba(255, 230, 150, 0.15);
   border-bottom: 1px solid rgba(212, 175, 55, 0.25);
-}
-
-/* Left angel */
-nav.navbar::before,
-.navbar.navbar-fixed-top::before,
-.navbar::before {
-  content: "" !important;
-  position: absolute !important;
-  left: 4px !important;
-  top: 50% !important;
-  transform: translateY(-50%) !important;
-  width: 48px !important;
-  height: 48px !important;
-  background-image: url("https://cdn.jsdelivr.net/gh/jesus028-hash/cytube-themes@main/angel-left.png?v=3") !important;
-  background-size: contain !important;
-  background-repeat: no-repeat !important;
-  background-position: center !important;
-  opacity: 1 !important;
-  pointer-events: none !important;
-  z-index: 1031 !important;
-  filter: drop-shadow(0 0 8px rgba(255, 215, 100, 0.7)) !important;
-  display: block !important;
-}
-
-/* Right angel (mirrored) */
-nav.navbar::after,
-.navbar.navbar-fixed-top::after,
-.navbar::after {
-  content: "" !important;
-  position: absolute !important;
-  right: 4px !important;
-  top: 50% !important;
-  transform: translateY(-50%) scaleX(-1) !important;
-  width: 48px !important;
-  height: 48px !important;
-  background-image: url("https://cdn.jsdelivr.net/gh/jesus028-hash/cytube-themes@main/angel-left.png?v=3") !important;
-  background-size: contain !important;
-  background-repeat: no-repeat !important;
-  background-position: center !important;
-  opacity: 1 !important;
-  pointer-events: none !important;
-  z-index: 1031 !important;
-  filter: drop-shadow(0 0 8px rgba(255, 215, 100, 0.7)) !important;
-  display: block !important;
 }
 
 .navbar-inverse .navbar-brand,
