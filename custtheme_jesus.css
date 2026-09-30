@@ -17,40 +17,42 @@
 
 /* Left angel */
 #chatheader::before {
-  content: "";
-  position: absolute;
-  left: 4px;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 48px;
-  height: 48px;
-  background-image: url("https://cdn.jsdelivr.net/gh/jesus028-hash/cytube-themes@main/angel-left.png");
-  background-size: contain;
-  background-repeat: no-repeat;
-  background-position: center;
-  opacity: 0.9;
-  pointer-events: none;
-  z-index: 2;
-  filter: drop-shadow(0 0 6px rgba(255, 215, 100, 0.55));
+  content: "" !important;
+  position: absolute !important;
+  left: 6px !important;
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+  width: 56px !important;
+  height: 56px !important;
+  background-image: url("https://cdn.jsdelivr.net/gh/jesus028-hash/cytube-themes@main/angel-left.png?v=3") !important;
+  background-size: contain !important;
+  background-repeat: no-repeat !important;
+  background-position: center !important;
+  opacity: 1 !important;
+  pointer-events: none !important;
+  z-index: 50 !important;
+  filter: drop-shadow(0 0 8px rgba(255, 215, 100, 0.7)) !important;
+  display: block !important;
 }
 
 /* Right angel (mirrored) */
 #chatheader::after {
-  content: "";
-  position: absolute;
-  right: 4px;
-  top: 50%;
-  transform: translateY(-50%) scaleX(-1);
-  width: 48px;
-  height: 48px;
-  background-image: url("https://cdn.jsdelivr.net/gh/jesus028-hash/cytube-themes@main/angel-left.png");
-  background-size: contain;
-  background-repeat: no-repeat;
-  background-position: center;
-  opacity: 0.9;
-  pointer-events: none;
-  z-index: 2;
-  filter: drop-shadow(0 0 6px rgba(255, 215, 100, 0.55));
+  content: "" !important;
+  position: absolute !important;
+  right: 6px !important;
+  top: 50% !important;
+  transform: translateY(-50%) scaleX(-1) !important;
+  width: 56px !important;
+  height: 56px !important;
+  background-image: url("https://cdn.jsdelivr.net/gh/jesus028-hash/cytube-themes@main/angel-left.png?v=3") !important;
+  background-size: contain !important;
+  background-repeat: no-repeat !important;
+  background-position: center !important;
+  opacity: 1 !important;
+  pointer-events: none !important;
+  z-index: 50 !important;
+  filter: drop-shadow(0 0 8px rgba(255, 215, 100, 0.7)) !important;
+  display: block !important;
 }
 
 #currenttitle {
