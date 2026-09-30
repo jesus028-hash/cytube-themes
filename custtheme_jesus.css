@@ -72,8 +72,10 @@
   background-image: linear-gradient(#0a0a12f7 12%, #0c0e18e8 80%, #0e101ae8);
 }
 
+
+
 #chat-footer {
-  background-image: url("https://cdn.jsdelivr.net/gh/jesus028-hash/cytube-themes@main/angel-left.png?v=3") !important;
+  background-image:linear-gradient(transparent 30%,#0006),url(https://cdn.jsdelivr.net/gh/jesus028-hash/cytube-themes@main/angel-left.png); 
     linear-gradient(transparent 30%, #0006),
     radial-gradient(ellipse 100% 80% at 50% 120%, rgba(255, 215, 100, 0.15), transparent 60%),
     linear-gradient(180deg, #0a0a12, #12100a);
@@ -273,35 +275,3 @@
 })();
 
 
-// Angel on chat footer
-(function () {
-  var footer = document.querySelector(".chat-footer, #chat-footer");
-
-  if (!footer) return;
-
-  
-
- var angel = document.createElement("img");
-  angel.className = "jesus-footer-angel";
-  angel.src = "https://cdn.jsdelivr.net/gh/jesus028-hash/cytube-themes@main/angel-left.png?v=6";
-  angel.alt = "";
-
-  angel.style.cssText =
-    "position:absolute;" +
-    "left:50%;" +
-    "top:50%;" +
-    "width:40px;" +
-    "height:40px;" +
-    "object-fit:contain;" +
-    "pointer-events:none;" +
-    "z-index:1;" +
-    "transform:translate(-50%,-10%);" +
-    "filter:drop-shadow(0 0 6px rgba(255,215,100,0.55));";
-
-  var cs = window.getComputedStyle(footer);
-  if (cs.position === "static") {
-    footer.style.position = "relative";
-  }
-
-  footer.appendChild(angel);
-})();
