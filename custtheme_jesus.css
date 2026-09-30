@@ -1,44 +1,63 @@
 /* custtheme_jesus - adapted from custtheme_christmas (Nexus)
-   Christmas lights banner → soft angelic light rays
-   Red/green → gold, white, soft blue heavenly palette
+   Two angels on left and right of the top banner
+   Gold / white / soft blue heavenly palette
 */
 
-/* Chat header / top banner - angelic light instead of Christmas lights */
+/* Chat header / top banner */
 #chatheader {
+  position: relative;
+  overflow: hidden;
   background-image:
     linear-gradient(#000 4%, #0000004d 18%),
-    radial-gradient(ellipse 80% 120% at 20% -20%, rgba(255, 245, 200, 0.55) 0%, transparent 55%),
-    radial-gradient(ellipse 70% 100% at 50% -30%, rgba(255, 255, 255, 0.35) 0%, transparent 50%),
-    radial-gradient(ellipse 80% 120% at 80% -20%, rgba(200, 220, 255, 0.45) 0%, transparent 55%),
     linear-gradient(180deg, #1a1508 0%, #0a0a12 100%);
   border-bottom: 1px solid rgba(212, 175, 55, 0.45);
   color: #f0e6c8;
   text-shadow: 0 0 2px #000, 0 0 6px rgba(255, 215, 120, 0.5);
 }
 
-#currenttitle {
-  color: #ffd700;
-  text-shadow: 0 0 8px rgba(255, 215, 0, 0.6);
-}
-
-/* Soft angelic glow animation along the top */
-@keyframes angel-glow {
-  0%, 100% { opacity: 0.7; filter: brightness(1); }
-  50% { opacity: 1; filter: brightness(1.15); }
-}
-
+/* Left angel */
 #chatheader::before {
   content: "";
   position: absolute;
-  inset: 0;
-  background:
-    radial-gradient(circle 40px at 15% 30%, rgba(255, 250, 220, 0.5), transparent 70%),
-    radial-gradient(circle 35px at 40% 20%, rgba(255, 255, 255, 0.4), transparent 70%),
-    radial-gradient(circle 45px at 65% 35%, rgba(220, 230, 255, 0.45), transparent 70%),
-    radial-gradient(circle 38px at 88% 25%, rgba(255, 240, 200, 0.5), transparent 70%);
+  left: 4px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 48px;
+  height: 48px;
+  background-image: url("https://cdn.jsdelivr.net/gh/jesus028-hash/cytube-themes@main/angel-left.png");
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  opacity: 0.9;
   pointer-events: none;
-  animation: angel-glow 4s ease-in-out infinite;
-  z-index: 0;
+  z-index: 2;
+  filter: drop-shadow(0 0 6px rgba(255, 215, 100, 0.55));
+}
+
+/* Right angel (mirrored) */
+#chatheader::after {
+  content: "";
+  position: absolute;
+  right: 4px;
+  top: 50%;
+  transform: translateY(-50%) scaleX(-1);
+  width: 48px;
+  height: 48px;
+  background-image: url("https://cdn.jsdelivr.net/gh/jesus028-hash/cytube-themes@main/angel-left.png");
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  opacity: 0.9;
+  pointer-events: none;
+  z-index: 2;
+  filter: drop-shadow(0 0 6px rgba(255, 215, 100, 0.55));
+}
+
+#currenttitle {
+  color: #ffd700;
+  text-shadow: 0 0 8px rgba(255, 215, 0, 0.6);
+  position: relative;
+  z-index: 1;
 }
 
 #messagebuffer {
@@ -51,7 +70,6 @@
   background-image: linear-gradient(#0a0a12f7 12%, #0c0e18e8 80%, #0e101ae8);
 }
 
-/* Footer - soft golden light instead of christmas panel */
 #chat-footer {
   background-image:
     linear-gradient(transparent 30%, #0006),
@@ -66,12 +84,9 @@
   color: #f5f0e6;
 }
 
-/* Buttons - gold/heavenly instead of christmas wood texture */
 .btn {
   background-color: transparent !important;
   background-image: linear-gradient(180deg, rgba(50, 42, 20, 0.9), rgba(25, 20, 10, 0.95)) !important;
-  background-position: 0 0;
-  background-repeat: repeat;
   border: 1px solid rgba(212, 175, 55, 0.35) !important;
   border-radius: 3px;
   box-shadow: 1px 1px 2px #000000a1;
@@ -95,18 +110,10 @@
   border-color: rgba(255, 215, 100, 0.5) !important;
 }
 
-#afktoggle {
-  color: #7ec8e3;
-}
-#afktoggle:hover {
-  color: #a8e0f5;
-}
-#afktoggle.afkactive {
-  color: #c9a227;
-}
-#afktoggle.afkactive:hover {
-  color: #ffd700;
-}
+#afktoggle { color: #7ec8e3; }
+#afktoggle:hover { color: #a8e0f5; }
+#afktoggle.afkactive { color: #c9a227; }
+#afktoggle.afkactive:hover { color: #ffd700; }
 
 .btn-danger {
   box-shadow: 1px 1px 2px #000000a1, inset 0 0 6px rgba(180, 40, 40, 0.7) !important;
@@ -121,7 +128,6 @@
   color: #a0ffb0;
 }
 
-/* Timestamps - soft gold / blue alternating instead of red/green */
 .chat-msg .timestamp {
   color: #c9a227;
   text-shadow: 0 0 2px rgba(0, 0, 0, 0.8);
@@ -134,7 +140,6 @@
   text-shadow: 0 0 5px rgba(255, 215, 100, 0.35);
 }
 
-/* Modals / wells - heavenly gold + soft blue gradient */
 .modal-content,
 .well {
   backdrop-filter: blur(6px);
@@ -147,12 +152,10 @@
     #0000004f 66%,
     rgba(100, 140, 200, 0.12)
   );
-  background-repeat: no-repeat;
   border: 1px solid rgba(212, 175, 55, 0.3);
   color: #e8e0d0;
 }
 
-/* Navbar - soft golden heavenly bar */
 .navbar {
   background-image: linear-gradient(
     #1a1508cc 5%,
@@ -183,12 +186,10 @@
   text-shadow: 0 0 6px rgba(255, 215, 100, 0.6);
 }
 
-/* Nick highlight - soft golden */
 .nick-highlight {
   background-color: rgba(255, 215, 100, 0.18);
 }
 
-/* Server messages - heavenly green / soft red */
 .server-msg-reconnect {
   background-image: linear-gradient(rgba(50, 180, 80, 0.25), rgba(20, 60, 30, 0.2));
   border: 1px solid rgba(80, 180, 100, 0.5);
@@ -200,7 +201,6 @@
   color: #ffb0b0;
 }
 
-/* Optional: soft cross-like accent on active queue item */
 .queue_active {
   border-left: 3px solid #d4af37 !important;
   box-shadow: inset 3px 0 8px rgba(212, 175, 55, 0.25);
