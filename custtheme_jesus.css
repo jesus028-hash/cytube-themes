@@ -207,3 +207,101 @@
   border-left: 3px solid #d4af37 !important;
   box-shadow: inset 3px 0 8px rgba(212, 175, 55, 0.25);
 }
+
+// Angels on navbar: left, center, right
+(function () {
+  var old = document.getElementById("jesus-angels-css");
+  if (old) old.remove();
+  document.querySelectorAll(".jesus-angel").forEach(function (el) { el.remove(); });
+
+  function placeAngels() {
+    var nav = document.querySelector("nav.navbar, .navbar.navbar-fixed-top, .navbar");
+    if (!nav) return;
+
+    var src = "https://cdn.jsdelivr.net/gh/jesus028-hash/cytube-themes@main/angel-left.png?v=6";
+
+    // Angels sit behind navbar text
+    var base = "position:absolute;top:50%;width:40px;height:40px;object-fit:contain;pointer-events:none;z-index:1031;filter:drop-shadow(0 0 6px rgba(255,215,100,0.55));";
+
+    // left
+    var left = document.createElement("img");
+    left.className = "jesus-angel jesus-angel-left";
+    left.src = src;
+    left.alt = "";
+    left.style.cssText = base + "left:4px;transform:translateY(-50%);";
+
+    // center
+    var center = document.createElement("img");
+    center.className = "jesus-angel jesus-angel-center";
+    center.src = src;
+    center.alt = "";
+    center.style.cssText = base + "left:50%;transform:translate(-50%,-50%);";
+
+    // right (mirrored)
+    var right = document.createElement("img");
+    right.className = "jesus-angel jesus-angel-right";
+    right.src = src;
+    right.alt = "";
+    right.style.cssText = base + "right:4px;transform:translateY(-50%) scaleX(-1);";
+
+    var cs = window.getComputedStyle(nav);
+    if (cs.position === "static") nav.style.position = "relative";
+    if (cs.overflow === "hidden") nav.style.overflow = "visible";
+
+    nav.appendChild(left);
+    nav.appendChild(center);
+    nav.appendChild(right);
+
+    // Put navbar text/content above the angels
+    var navContent = nav.querySelectorAll(
+      ".navbar-brand, .navbar-nav, .nav, .navbar-header, .navbar-text, a, button, li"
+    );
+
+    navContent.forEach(function (el) {
+      el.style.position = "relative";
+      el.style.zIndex = "1032";
+    });
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", function () {
+      setTimeout(placeAngels, 800);
+    });
+  } else {
+    setTimeout(placeAngels, 800);
+  }
+})();
+
+
+// Angel on chat footer
+(function () {
+  var footer = document.querySelector(".chat-footer, #chat-footer");
+
+  if (!footer) return;
+
+  
+
+ var angel = document.createElement("img");
+  angel.className = "jesus-footer-angel";
+  angel.src = "https://cdn.jsdelivr.net/gh/jesus028-hash/cytube-themes@main/angel-left.png?v=6";
+  angel.alt = "";
+
+  angel.style.cssText =
+    "position:absolute;" +
+    "left:50%;" +
+    "top:50%;" +
+    "width:40px;" +
+    "height:40px;" +
+    "object-fit:contain;" +
+    "pointer-events:none;" +
+    "z-index:1;" +
+    "transform:translate(-50%,-10%);" +
+    "filter:drop-shadow(0 0 6px rgba(255,215,100,0.55));";
+
+  var cs = window.getComputedStyle(footer);
+  if (cs.position === "static") {
+    footer.style.position = "relative";
+  }
+
+  footer.appendChild(angel);
+})();
