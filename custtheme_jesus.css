@@ -1,163 +1,91 @@
-/* custtheme_jesus - adapted from custtheme_christmas (Nexus)
-   Two angels on left and right of the navbar
-   Gold / white / soft blue heavenly palette
-*/
+/* =========================================================
+   JESUS THEME - HEAVENLY NAVBAR + CHAT FOOTER
+   ========================================================= */
 
 
+/* ---------------------------------------------------------
+   NAVBAR ANGELS
+   --------------------------------------------------------- */
 
+.navbar {
+    position: relative !important;
 
+    /* Three angels */
+    background-image:
+        url("https://cdn.jsdelivr.net/gh/jesus028-hash/cytube-themes@main/angel-left.png?v=6"),
+        url("https://cdn.jsdelivr.net/gh/jesus028-hash/cytube-themes@main/angel-left.png?v=6"),
+        url("https://cdn.jsdelivr.net/gh/jesus028-hash/cytube-themes@main/angel-left.png?v=6");
 
+    background-repeat: no-repeat;
 
+    background-position:
+        4px center,
+        center center,
+        calc(100% - 4px) center;
 
-/* Chat header (no angels) */
-#chatheader {
-  position: relative;
-  overflow: hidden;
-  background-image:
-    linear-gradient(#000 4%, #0000004d 18%),
-    linear-gradient(180deg, #1a1508 0%, #0a0a12 100%);
-  border-bottom: 1px solid rgba(212, 175, 55, 0.45);
-  color: #f0e6c8;
-  text-shadow: 0 0 2px #000, 0 0 6px rgba(255, 215, 120, 0.5);
+    background-size:
+        40px 40px,
+        40px 40px,
+        40px 40px;
 }
 
-#currenttitle {
-  color: #ffd700;
-  text-shadow: 0 0 8px rgba(255, 215, 0, 0.6);
-  position: relative;
-  z-index: 1;
+
+/* Keep navbar text above the angels */
+
+.navbar .navbar-brand,
+.navbar .navbar-nav,
+.navbar .nav,
+.navbar .navbar-header,
+.navbar .navbar-text,
+.navbar a,
+.navbar button,
+.navbar li {
+    position: relative;
+    z-index: 2;
 }
 
-#messagebuffer {
-  backdrop-filter: blur(10px);
-}
 
-#messagebuffer,
-#userlist {
-  background: none;
-  background-image: linear-gradient(#0a0a12f7 12%, #0c0e18e8 80%, #0e101ae8);
-}
+/* ---------------------------------------------------------
+   CHAT FOOTER
+   --------------------------------------------------------- */
 
+.chat-footer,
 #chat-footer {
-  background-image:
-    linear-gradient(transparent 30%, #0006),
-    radial-gradient(ellipse 100% 80% at 50% 120%, rgba(255, 215, 100, 0.15), transparent 60%),
-    linear-gradient(180deg, #0a0a12, #12100a);
-  border-top: 1px solid rgba(212, 175, 55, 0.35);
+    position: relative !important;
+
+    /* Heavenly sky + angel */
+    background-image:
+        url("https://cdn.jsdelivr.net/gh/jesus028-hash/cytube-themes/refs/heads/main/Sky.png"),
+        url("https://cdn.jsdelivr.net/gh/jesus028-hash/cytube-themes@main/angel-left.png?v=6");
+
+    background-repeat:
+        no-repeat,
+        no-repeat;
+
+    background-position:
+        center center,
+        center center;
+
+    background-size:
+        cover,
+        40px 40px;
 }
 
-#chatline {
-  background-color: #0c0a08a1 !important;
-  box-shadow: 0 0 3px rgba(40, 30, 10, 0.85), inset 1px 2px 3px rgba(20, 15, 5, 0.9);
-  color: #f5f0e6;
-}
 
-.btn {
-  background-color: transparent !important;
-  background-image: linear-gradient(180deg, rgba(50, 42, 20, 0.9), rgba(25, 20, 10, 0.95)) !important;
-  border: 1px solid rgba(212, 175, 55, 0.35) !important;
-  border-radius: 3px;
-  box-shadow: 1px 1px 2px #000000a1;
-  color: #f0e6c8;
-  text-shadow: 0 0 3px #0d0503ed;
-}
+/* Keep chat controls above the heavenly background */
 
-.btn-chat:active,
-.btn-chat:focus,
-.btn-default:active,
-.btn-default:focus {
-  border-color: #d4af37 !important;
-  color: #ffeaa0;
-  text-shadow: 0 0 6px rgba(255, 215, 100, 0.7);
-}
-
-.btn-chat:hover,
-.btn-default:hover {
-  color: #ffeaa0;
-  text-shadow: 0 0 8px rgba(255, 215, 100, 0.8);
-  border-color: rgba(255, 215, 100, 0.5) !important;
-}
-
-#afktoggle { color: #7ec8e3; }
-#afktoggle:hover { color: #a8e0f5; }
-#afktoggle.afkactive { color: #c9a227; }
-#afktoggle.afkactive:hover { color: #ffd700; }
-
-.btn-danger {
-  box-shadow: 1px 1px 2px #000000a1, inset 0 0 6px rgba(180, 40, 40, 0.7) !important;
-  color: #ffb0b0;
-}
-.btn-warning {
-  box-shadow: 1px 1px 2px #000000a1, inset 0 0 6px rgba(255, 215, 0, 0.5) !important;
-  color: #fff3a0;
-}
-.btn-success {
-  box-shadow: 1px 1px 2px #000000a1, inset 0 0 6px rgba(80, 180, 100, 0.5) !important;
-  color: #a0ffb0;
-}
-
-.chat-msg .timestamp {
-  color: #c9a227;
-  text-shadow: 0 0 2px rgba(0, 0, 0, 0.8);
-}
-.chat-msg:nth-child(odd) .timestamp {
-  color: #7eb8d4;
-}
-
-.username {
-  text-shadow: 0 0 5px rgba(255, 215, 100, 0.35);
-}
-
-.modal-content,
-.well {
-  backdrop-filter: blur(6px);
-  background-clip: padding-box;
-  background-color: #131313c4;
-  background-image: linear-gradient(
-    -16deg,
-    rgba(212, 175, 55, 0.12),
-    #0000004f 33%,
-    #0000004f 66%,
-    rgba(100, 140, 200, 0.12)
-  );
-  border: 1px solid rgba(212, 175, 55, 0.3);
-  color: #e8e0d0;
-}
-
-.navbar-inverse .navbar-brand,
-.navbar-brand {
-  color: #ffd700 !important;
-  text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
-}
-
-.navbar > li > a,
-.navbar-inverse .navbar-nav > li > a {
-  color: #e8dcc8 !important;
-  text-shadow: 0 0 2px #000;
-}
-
-.navbar > li > a:hover,
-.navbar-inverse .navbar-nav > li > a:hover {
-  color: #ffeaa0 !important;
-  text-shadow: 0 0 6px rgba(255, 215, 100, 0.6);
-}
-
-.nick-highlight {
-  background-color: rgba(255, 215, 100, 0.18);
-}
-
-.server-msg-reconnect {
-  background-image: linear-gradient(rgba(50, 180, 80, 0.25), rgba(20, 60, 30, 0.2));
-  border: 1px solid rgba(80, 180, 100, 0.5);
-  color: #90ee90;
-}
-.server-msg-disconnect {
-  background-image: linear-gradient(rgba(180, 50, 50, 0.25), rgba(60, 20, 20, 0.2));
-  border: 1px solid rgba(180, 60, 60, 0.5);
-  color: #ffb0b0;
-}
-
-.queue_active {
-  border-left: 3px solid #d4af37 !important;
-  box-shadow: inset 3px 0 8px rgba(212, 175, 55, 0.25);
+.chat-footer input,
+.chat-footer textarea,
+.chat-footer button,
+.chat-footer a,
+.chat-footer .form-control,
+.chat-footer .btn,
+#chat-footer input,
+#chat-footer textarea,
+#chat-footer button,
+#chat-footer a,
+#chat-footer .form-control,
+#chat-footer .btn {
+    position: relative;
+    z-index: 2;
 }
