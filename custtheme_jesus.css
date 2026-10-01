@@ -1,203 +1,87 @@
 /* =========================================================
-   JESUS THEME - full theme + navbar/footer angels (CSS only)
+   JESUS THEME - angels only, do not break navbar layout
    ========================================================= */
 
-/* ---------- Base ---------- */
-body,
-#wrap {
-  background-color: #0a0a12;
-}
-
-/* ---------- Navbar: keep normal layout, angels as decoration ---------- */
+/* ---------- Navbar: decoration only, no layout changes ---------- */
 .navbar,
-.navbar-inverse,
-nav.navbar {
-  position: relative !important;
-  /* Do NOT override height/flex — let Nexus handle size */
-  min-height: 50px !important;
-  background-color: #12100acc !important;
+.navbar-inverse {
   background-image:
     url("https://cdn.jsdelivr.net/gh/jesus028-hash/cytube-themes@main/angel-left.png?v=6"),
     url("https://cdn.jsdelivr.net/gh/jesus028-hash/cytube-themes@main/angel-left.png?v=6"),
-    url("https://cdn.jsdelivr.net/gh/jesus028-hash/cytube-themes@main/angel-left.png?v=6"),
-    linear-gradient(#1a1508cc 5%, #0c0a10e0 50%, #000000f5 51%, #000000cf 90%) !important;
-  background-repeat: no-repeat, no-repeat, no-repeat, no-repeat !important;
+    url("https://cdn.jsdelivr.net/gh/jesus028-hash/cytube-themes@main/angel-left.png?v=6") !important;
+  background-repeat: no-repeat, no-repeat, no-repeat !important;
   background-position:
-    8px center,
+    6px center,
     center center,
-    calc(100% - 8px) center,
-    center center !important;
+    calc(100% - 6px) center !important;
   background-size:
-    36px 36px,
-    36px 36px,
-    36px 36px,
-    auto !important;
-  border-bottom: 1px solid rgba(212, 175, 55, 0.25) !important;
-  box-shadow: inset 0 2px 4px rgba(255, 230, 150, 0.15) !important;
-  /* room for side angels so content is not crushed */
-  padding-left: 48px !important;
-  padding-right: 48px !important;
+    32px 32px,
+    32px 32px,
+    32px 32px !important;
+  /* keep Nexus background color/gradient underneath */
+  background-color: inherit;
 }
 
-/* Keep text readable above angel backgrounds */
+/* text stays readable */
 .navbar .navbar-brand,
 .navbar .navbar-nav,
 .navbar .nav,
-.navbar .navbar-header,
-.navbar .navbar-text,
-.navbar .container,
-.navbar .container-fluid,
 .navbar a,
 .navbar button,
 .navbar li {
-  position: relative !important;
-  z-index: 2 !important;
+  position: relative;
+  z-index: 2;
 }
 
-.navbar-inverse .navbar-brand,
-.navbar-brand {
+.navbar-brand,
+.navbar-inverse .navbar-brand {
   color: #ffd700 !important;
-  text-shadow: 0 0 10px rgba(255, 215, 0, 0.5) !important;
-  height: auto !important;
-  line-height: normal !important;
-  padding-top: 12px !important;
-  padding-bottom: 12px !important;
-}
-
-.navbar > li > a,
-.navbar-inverse .navbar-nav > li > a,
-.navbar-nav > li > a {
-  color: #e8dcc8 !important;
-  text-shadow: 0 0 2px #000 !important;
-}
-
-.navbar > li > a:hover,
-.navbar-inverse .navbar-nav > li > a:hover,
-.navbar-nav > li > a:hover {
-  color: #ffeaa0 !important;
-  text-shadow: 0 0 6px rgba(255, 215, 100, 0.6) !important;
+  text-shadow: 0 0 8px rgba(255, 215, 0, 0.5);
 }
 
 /* ---------- Chat header ---------- */
 #chatheader {
-  position: relative !important;
-  background-image: linear-gradient(#000 4%, #0000004d 18%), linear-gradient(180deg, #1a1508 0%, #0a0a12 100%) !important;
-  border-bottom: 1px solid rgba(212, 175, 55, 0.45) !important;
+  border-bottom: 1px solid rgba(212, 175, 55, 0.4) !important;
   color: #f0e6c8 !important;
-  text-shadow: 0 0 2px #000, 0 0 6px rgba(255, 215, 120, 0.5) !important;
 }
 
 #currenttitle {
   color: #ffd700 !important;
-  text-shadow: 0 0 8px rgba(255, 215, 0, 0.6) !important;
+  text-shadow: 0 0 6px rgba(255, 215, 0, 0.5);
 }
 
-/* ---------- Chat area ---------- */
-#messagebuffer,
-#userlist {
-  background: none !important;
-  background-image: linear-gradient(#0a0a12f7 12%, #0c0e18e8 80%, #0e101ae8) !important;
-}
-
-#messagebuffer {
-  backdrop-filter: blur(10px);
-  color: #e8d2c4;
-}
-
-/* ---------- Chat footer: sky + center angel ---------- */
-.chat-footer,
-#chat-footer {
-  position: relative !important;
-  background-color: transparent !important;
+/* ---------- Chat footer: sky + angel (no layout change) ---------- */
+#chat-footer,
+.chat-footer {
   background-image:
     url("https://cdn.jsdelivr.net/gh/jesus028-hash/cytube-themes@main/angel-left.png?v=6"),
-    url("https://cdn.jsdelivr.net/gh/jesus028-hash/cytube-themes@main/Sky.png?v=1"),
-    linear-gradient(transparent 30%, rgba(0, 0, 0, 0.4)) !important;
-  background-repeat: no-repeat, no-repeat, no-repeat !important;
-  background-position:
-    center center,
-    center center,
-    center center !important;
-  background-size:
-    40px 40px,
-    cover,
-    cover !important;
+    url("https://cdn.jsdelivr.net/gh/jesus028-hash/cytube-themes@main/Sky.png?v=1") !important;
+  background-repeat: no-repeat, no-repeat !important;
+  background-position: center center, center center !important;
+  background-size: 36px 36px, cover !important;
   border-top: 1px solid rgba(212, 175, 55, 0.35) !important;
 }
 
-.chat-footer input,
-.chat-footer textarea,
-.chat-footer button,
-.chat-footer a,
-.chat-footer .form-control,
-.chat-footer .btn,
 #chat-footer input,
 #chat-footer textarea,
 #chat-footer button,
-#chat-footer a,
-#chat-footer .form-control,
 #chat-footer .btn,
-#chatline {
-  position: relative !important;
-  z-index: 2 !important;
+#chatline,
+.chat-footer input,
+.chat-footer button {
+  position: relative;
+  z-index: 2;
 }
 
-#chatline {
-  background-color: #0c0a08a1 !important;
-  box-shadow: 0 0 3px rgba(40, 30, 10, 0.85), inset 1px 2px 3px rgba(20, 15, 5, 0.9) !important;
-  color: #f5f0e6 !important;
-}
-
-/* ---------- Buttons ---------- */
-.btn {
-  background-color: transparent !important;
-  background-image: linear-gradient(180deg, rgba(50, 42, 20, 0.9), rgba(25, 20, 10, 0.95)) !important;
-  border: 1px solid rgba(212, 175, 55, 0.35) !important;
-  border-radius: 3px !important;
-  box-shadow: 1px 1px 2px #000000a1 !important;
-  color: #f0e6c8 !important;
-  text-shadow: 0 0 3px #0d0503ed !important;
-}
-
-.btn-chat:hover,
-.btn-default:hover {
-  color: #ffeaa0 !important;
-  text-shadow: 0 0 8px rgba(255, 215, 100, 0.8) !important;
-  border-color: rgba(255, 215, 100, 0.5) !important;
-}
-
-/* ---------- Chat text ---------- */
-.chat-msg .timestamp {
-  color: #c9a227 !important;
-  text-shadow: 0 0 2px rgba(0, 0, 0, 0.8) !important;
-}
-.chat-msg:nth-child(odd) .timestamp {
-  color: #7eb8d4 !important;
-}
+/* ---------- Light gold accents (safe) ---------- */
 .username {
-  text-shadow: 0 0 5px rgba(255, 215, 100, 0.35) !important;
-}
-.nick-highlight {
-  background-color: rgba(255, 215, 100, 0.18) !important;
+  text-shadow: 0 0 4px rgba(255, 215, 100, 0.3);
 }
 
-/* ---------- Modals ---------- */
-.modal-content,
-.well {
-  backdrop-filter: blur(6px);
-  background-color: #131313c4 !important;
-  background-image: linear-gradient(
-    -16deg,
-    rgba(212, 175, 55, 0.12),
-    #0000004f 33%,
-    #0000004f 66%,
-    rgba(100, 140, 200, 0.12)
-  ) !important;
-  border: 1px solid rgba(212, 175, 55, 0.3) !important;
-  color: #e8e0d0 !important;
+.nick-highlight {
+  background-color: rgba(255, 215, 100, 0.15) !important;
 }
 
 .queue_active {
   border-left: 3px solid #d4af37 !important;
-  box-shadow: inset 3px 0 8px rgba(212, 175, 55, 0.25) !important;
 }
