@@ -1,22 +1,16 @@
 /* =========================================================
-   HOLYPLEX - JESUS THEME
+   JESUS THEME - HEAVENLY NAVBAR + CHAT FOOTER
    ========================================================= */
 
 
-/* =========================================================
-   NAVBAR
-   ========================================================= */
+/* ---------------------------------------------------------
+   NAVBAR ANGELS
+   --------------------------------------------------------- */
 
 .navbar {
     position: relative !important;
 
-    /*
-     * Three angels:
-     * left
-     * centre
-     * right
-     */
-
+    /* Three angels */
     background-image:
         url("https://cdn.jsdelivr.net/gh/jesus028-hash/cytube-themes@main/angel-left.png?v=6"),
         url("https://cdn.jsdelivr.net/gh/jesus028-hash/cytube-themes@main/angel-left.png?v=6"),
@@ -36,9 +30,7 @@
 }
 
 
-/* ---------------------------------------------------------
-   NAVBAR TEXT ABOVE ANGELS
-   --------------------------------------------------------- */
+/* Keep navbar text above the angels */
 
 .navbar .navbar-brand,
 .navbar .navbar-nav,
@@ -53,32 +45,34 @@
 }
 
 
-/* =========================================================
-   CHAT FOOTER - HEAVENLY SKY
-   ========================================================= */
+/* ---------------------------------------------------------
+   CHAT FOOTER
+   --------------------------------------------------------- */
 
 .chat-footer,
 #chat-footer {
-
     position: relative !important;
 
+    /* Heavenly sky + angel */
     background-image:
-        url("https://raw.githubusercontent.com/jesus028-hash/cytube-themes/refs/heads/main/Sky.png");
+        url("https://cdn.jsdelivr.net/gh/jesus028-hash/cytube-themes/refs/heads/main/Sky.png"),
+        url("https://cdn.jsdelivr.net/gh/jesus028-hash/cytube-themes@main/angel-left.png?v=6");
 
-    background-repeat: no-repeat;
+    background-repeat:
+        no-repeat,
+        no-repeat;
 
     background-position:
+        center center,
         center center;
 
     background-size:
-        cover;
-
+        cover,
+        40px 40px;
 }
 
 
-/* ---------------------------------------------------------
-   CHAT FOOTER CONTENT ABOVE SKY
-   --------------------------------------------------------- */
+/* Keep chat controls above the heavenly background */
 
 .chat-footer input,
 .chat-footer textarea,
@@ -86,62 +80,12 @@
 .chat-footer a,
 .chat-footer .form-control,
 .chat-footer .btn,
-
 #chat-footer input,
 #chat-footer textarea,
 #chat-footer button,
 #chat-footer a,
 #chat-footer .form-control,
 #chat-footer .btn {
-
     position: relative;
     z-index: 2;
-
-}
-
-
-/* =========================================================
-   OPTIONAL: SLIGHT HEAVENLY GLOW
-   ========================================================= */
-
-.chat-footer,
-#chat-footer {
-
-    box-shadow:
-        inset 0 0 25px rgba(255, 255, 255, 0.25);
-
-}
-
-
-/* =========================================================
-   ANGEL GLOW
-   ========================================================= */
-
-.navbar {
-
-    filter: none;
-
-}
-
-
-/* =========================================================
-   MOBILE
-   ========================================================= */
-
-@media (max-width: 600px) {
-
-    .navbar {
-
-        background-size:
-            32px 32px,
-            32px 32px,
-            32px 32px;
-
-        background-position:
-            2px center,
-            center center,
-            calc(100% - 2px) center;
-
-    }
-
 }
