@@ -1,0 +1,143 @@
+/* custtheme_christmas - extracted from https://checkthesedubs.github.io/js/Nexus-beta.js */
+
+/* Theme picker preview */
+.custtheme_christmas {
+  box-shadow:inset 0 0 6px hsla(0,100%,50.4%,.85),inset 0 0 2px hsla(0,0%,100%,.45);
+  border:2px dashed #fff;
+  color:#67ff5a;
+  text-shadow:0 0 4px;
+  background:linear-gradient(black 50%, #2b2a2a 80%, #7d7d7d) padding-box,red border-box
+}
+
+/* Main theme rules */
+.nick-highlight {
+  background-color:#ff77772b
+}
+#chatheader {
+  background-image:linear-gradient(#000 4%,#0000004d 18%),url(https://checkthesedubs.github.io/img/christmas_panel_bg.jpg);
+  border-bottom:1px solid #31180f85;
+  color:#d71414;
+  text-shadow:0 0 2px #000,0 0 4px #000
+}
+#currenttitle {
+  color:#40bb1e
+}
+#messagebuffer {
+  backdrop-filter:blur(10px)
+}
+#messagebuffer,#userlist {
+  background:none;
+  background-image:linear-gradient(#000000f7 12%,#08090fe8 80%,#0c0d15e8)
+}
+#chat-footer {
+  background-image:linear-gradient(transparent 30%,#0006),url(https://checkthesedubs.github.io/img/christmas_panel_bg.jpg);
+  border-top:1px solid #ff93454f
+}
+#chatline {
+  background-color:#110805a1!important;
+  box-shadow:0 0 3px #220f08d9,inset 1px 2px 3px #110803e5;
+  color:#f9f9f9
+}
+#chat-buttons-inline {
+  padding:4px 1px
+}
+.btn {
+  background-color:transparent!important;
+  background-image:url(https://checkthesedubs.github.io/img/christmas_btn.jpg)!important;
+  background-position:0 0;
+  background-repeat:repeat;
+  border:1px solid #0006!important;
+  border-left:0!important;
+  border-radius:3px;
+  border-top:0!important;
+  box-shadow:1px 1px 2px #000000a1;
+  color:#ecceb9c7;
+  text-shadow:0 0 3px #0d0503ed
+}
+.btn-chat:active,.btn-chat:focus,.btn-default:active,.btn-default:focus {
+  border-color:#000!important;
+  color:#0ad1ff;
+  text-shadow:1px 1px 1px #2e73bd
+}
+.btn-chat:hover,.btn-default:hover {
+  color:#0ad1ff;
+  text-shadow:1px 1px 1px #174b84
+}
+#afktoggle {
+  color:#5cb55c
+}
+#afktoggle:hover {
+  color:#0f0
+}
+#afktoggle.afkactive {
+  color:#aa4040
+}
+#afktoggle.afkactive:hover {
+  color:red
+}
+.btn-danger {
+  box-shadow:1px 1px 2px #000000a1,inset 0 0 6px #ff0000f5!important;
+  color:#ff8181
+}
+.btn-warning {
+  box-shadow:1px 1px 2px #000000a1,inset 0 0 6px #ffd700d6!important;
+  color:#ffff8b
+}
+.btn-success {
+  box-shadow:1px 1px 2px #000000a1,inset 0 0 6px #07e500d6!important;
+  color:#72ff4b
+}
+.chat-msg .timestamp {
+  color:#ac0000;
+  text-shadow:0 0 2px
+}
+.chat-msg:nth-child(odd) .timestamp {
+  color:#008e00
+}
+#btn-reload-nnd,#opt-customcss .input-group-btn .btn,#text-colors-wrap .btn {
+  background-size:cover
+}
+.username {
+  text-shadow:0 0 5px
+}
+.modal-content,.well {
+  backdrop-filter:blur(6px);
+  background-clip:padding-box;
+  background-color:#131313c4;
+  background-image:linear-gradient(-16deg,#ea0f0f21,#0000004f 33%,#0000004f 66%,#0d930d45);
+  background-repeat:no-repeat;
+  border:1px solid #00000094
+}
+.nav-tabs>li.active>a,.nav-tabs>li.active>a:focus,.nav-tabs>li.active>a:hover {
+  background-color:transparent;
+  background-image:url(https://checkthesedubs.github.io/img/christmas_btn.jpg)!important;
+  background-size:100% auto;
+  border:1px solid #220f06;
+  color:#ecceb9c7;
+  cursor:default
+}
+.modal-footer,.nav-tabs {
+  border-color:#000
+}
+.nav>li>a:focus,.nav>li>a:hover {
+  background-color:#aaaaaa4d;
+  border-color:#000
+}
+.modal input.form-control[type=text] {
+  background-color:#46464669!important;
+  border-color:#ffffff21
+}
+.emotelist-table,.emotelist-table td {
+  background-color:#ffffff0d
+}
+.pagination>li.disabled>a,.pagination>li.disabled>a:hover,.pagination>li.disabled>span,.pagination>li.disabled>span:hover {
+  background-image:linear-gradient(#130802b2),url(https://checkthesedubs.github.io/img/christmas_btn.jpg)!important;
+  color:#4f423a
+}
+.pagination>li>a,.pagination>li>span {
+  background-clip:padding-box;
+  background-image:url(https://checkthesedubs.github.io/img/christmas_btn.jpg)!important;
+  color:#b98d72;
+  text-shadow:0 0 3px #0d0503ed
+}
+',
