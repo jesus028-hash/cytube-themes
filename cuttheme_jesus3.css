@@ -1,0 +1,91 @@
+/* =========================================================
+   JESUS THEME - HEAVENLY NAVBAR + CHAT FOOTER
+   ========================================================= */
+
+
+/* ---------------------------------------------------------
+   NAVBAR ANGELS
+   --------------------------------------------------------- */
+
+.navbar {
+    position: relative !important;
+
+    /* Three angels */
+    background-image:
+        url("https://cdn.jsdelivr.net/gh/jesus028-hash/cytube-themes@main/angel-left.png?v=6"),
+        url("https://cdn.jsdelivr.net/gh/jesus028-hash/cytube-themes@main/angel-left.png?v=6"),
+        url("https://cdn.jsdelivr.net/gh/jesus028-hash/cytube-themes@main/angel-left.png?v=6");
+
+    background-repeat: no-repeat;
+
+    background-position:
+        4px center,
+        center center,
+        calc(100% - 4px) center;
+
+    background-size:
+        40px 40px,
+        40px 40px,
+        40px 40px;
+}
+
+
+/* Keep navbar text above the angels */
+
+.navbar .navbar-brand,
+.navbar .navbar-nav,
+.navbar .nav,
+.navbar .navbar-header,
+.navbar .navbar-text,
+.navbar a,
+.navbar button,
+.navbar li {
+    position: relative;
+    z-index: 2;
+}
+
+
+/* ---------------------------------------------------------
+   CHAT FOOTER
+   --------------------------------------------------------- */
+
+.chat-footer,
+#chat-footer {
+    position: relative !important;
+
+    /* Heavenly sky + angel */
+    background-image:
+        url("https://cdn.jsdelivr.net/gh/jesus028-hash/cytube-themes/refs/heads/main/Sky.png"),
+        url("https://cdn.jsdelivr.net/gh/jesus028-hash/cytube-themes@main/angel-left.png?v=6");
+
+    background-repeat:
+        no-repeat,
+        no-repeat;
+
+    background-position:
+        center center,
+        center center;
+
+    background-size:
+        cover,
+        40px 40px;
+}
+
+
+/* Keep chat controls above the heavenly background */
+
+.chat-footer input,
+.chat-footer textarea,
+.chat-footer button,
+.chat-footer a,
+.chat-footer .form-control,
+.chat-footer .btn,
+#chat-footer input,
+#chat-footer textarea,
+#chat-footer button,
+#chat-footer a,
+#chat-footer .form-control,
+#chat-footer .btn {
+    position: relative;
+    z-index: 2;
+}
