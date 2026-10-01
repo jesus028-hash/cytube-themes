@@ -2,15 +2,19 @@
    JESUS THEME - full theme + navbar/footer angels (CSS only)
    ========================================================= */
 
-/* ---------- Base / heavenly palette ---------- */
+/* ---------- Base ---------- */
 body,
 #wrap {
   background-color: #0a0a12;
 }
 
-.navbar {
+/* ---------- Navbar: keep normal layout, angels as decoration ---------- */
+.navbar,
+.navbar-inverse,
+nav.navbar {
   position: relative !important;
-  overflow: visible !important;
+  /* Do NOT override height/flex — let Nexus handle size */
+  min-height: 50px !important;
   background-color: #12100acc !important;
   background-image:
     url("https://cdn.jsdelivr.net/gh/jesus028-hash/cytube-themes@main/angel-left.png?v=6"),
@@ -19,25 +23,30 @@ body,
     linear-gradient(#1a1508cc 5%, #0c0a10e0 50%, #000000f5 51%, #000000cf 90%) !important;
   background-repeat: no-repeat, no-repeat, no-repeat, no-repeat !important;
   background-position:
-    4px center,
+    8px center,
     center center,
-    calc(100% - 4px) center,
+    calc(100% - 8px) center,
     center center !important;
   background-size:
-    40px 40px,
-    40px 40px,
-    40px 40px,
-    cover !important;
+    36px 36px,
+    36px 36px,
+    36px 36px,
+    auto !important;
   border-bottom: 1px solid rgba(212, 175, 55, 0.25) !important;
   box-shadow: inset 0 2px 4px rgba(255, 230, 150, 0.15) !important;
+  /* room for side angels so content is not crushed */
+  padding-left: 48px !important;
+  padding-right: 48px !important;
 }
 
-/* Navbar text above angels */
+/* Keep text readable above angel backgrounds */
 .navbar .navbar-brand,
 .navbar .navbar-nav,
 .navbar .nav,
 .navbar .navbar-header,
 .navbar .navbar-text,
+.navbar .container,
+.navbar .container-fluid,
 .navbar a,
 .navbar button,
 .navbar li {
@@ -49,16 +58,22 @@ body,
 .navbar-brand {
   color: #ffd700 !important;
   text-shadow: 0 0 10px rgba(255, 215, 0, 0.5) !important;
+  height: auto !important;
+  line-height: normal !important;
+  padding-top: 12px !important;
+  padding-bottom: 12px !important;
 }
 
 .navbar > li > a,
-.navbar-inverse .navbar-nav > li > a {
+.navbar-inverse .navbar-nav > li > a,
+.navbar-nav > li > a {
   color: #e8dcc8 !important;
   text-shadow: 0 0 2px #000 !important;
 }
 
 .navbar > li > a:hover,
-.navbar-inverse .navbar-nav > li > a:hover {
+.navbar-inverse .navbar-nav > li > a:hover,
+.navbar-nav > li > a:hover {
   color: #ffeaa0 !important;
   text-shadow: 0 0 6px rgba(255, 215, 100, 0.6) !important;
 }
@@ -110,7 +125,6 @@ body,
   border-top: 1px solid rgba(212, 175, 55, 0.35) !important;
 }
 
-/* Footer controls above background */
 .chat-footer input,
 .chat-footer textarea,
 .chat-footer button,
