@@ -3,6 +3,28 @@
    Gold / white / soft blue heavenly palette
 */
 
+
+
+/* Kill any chat-header angels (old CSS or leftovers) */
+#chatheader::before,
+#chatheader::after {
+  content: none !important;
+  display: none !important;
+  background: none !important;
+  width: 0 !important;
+  height: 0 !important;
+}
+
+#chatheader img.jesus-angel,
+#chatheader .jesus-angel,
+#chatheader img[src*="angel-left"] {
+  display: none !important;
+}
+
+
+
+
+
 /* Chat header (no angels) */
 #chatheader {
   position: relative;
