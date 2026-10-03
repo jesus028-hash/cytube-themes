@@ -1,0 +1,285 @@
+(function () {
+    "use strict";
+
+    // ============================================================
+    // EXTERNAL EMOTE CONFIG
+    // ============================================================
+
+    // CHANGE THIS to the URL where you host your emotes.json
+    var EMOTES_JSON_URL = "https://raw.githubusercontent.com/jesus028-hash/cytube-themes/refs/heads/main/emotes.json";
+
+
+    // ============================================================
+    // LOAD EXTERNAL EMOTES
+    // ============================================================
+
+    function loadExternalEmotes() {
+
+        fetch(EMOTES_JSON_URL, {
+            method: "GET",
+            cache: "no-cache"
+        })
+        .then(function (response) {
+
+            if (!response.ok) {
+                throw new Error(
+                    "HTTP " + response.status + " while loading emotes.json"
+                );
+            }
+
+            return response.json();
+        })
+
+        .then(function (externalEmotes) {
+
+            // Make sure the JSON is an array
+            if (!Array.isArray(externalEmotes)) {
+                throw new Error(
+                    "emotes.json must contain an array of emotes."
+                );
+            }
+
+
+            // ====================================================
+            // VALIDATE THE NAME + IMAGE FORMAT
+            // ====================================================
+
+            var validEmotes = [];
+
+            externalEmotes.forEach(function (emote) {
+
+                if (!emote) {
+                    return;
+                }
+
+                if (
+                    typeof emote.name !== "string" ||
+                    typeof emote.image !== "string"
+                ) {
+                    return;
+                }
+
+                if (!emote.name.trim() || !emote.image.trim()) {
+                    return;
+                }
+
+                validEmotes.push({
+                    name: emote.name,
+                    image: emote.image
+                });
+            });
+
+
+            // ====================================================
+            // REMOVE DUPLICATE NAMES
+            // ====================================================
+
+            var seen = {};
+
+            validEmotes = validEmotes.filter(function (emote) {
+
+                if (seen[emote.name]) {
+                    return false;
+                }
+
+                seen[emote.name] = true;
+
+                return true;
+            });
+
+
+            // ====================================================
+            // ADD THEM TO CYTUBE'S EMOTE LIST
+            // ====================================================
+
+            if (!window.CHANNEL) {
+                throw new Error("CyTube CHANNEL object not found.");
+            }
+
+            if (!Array.isArray(window.CHANNEL.emotes)) {
+                window.CHANNEL.emotes = [];
+            }
+
+
+            // Keep existing CyTube emotes and add the external ones.
+            //
+            // If you want the JSON to completely replace the
+            // channel's normal emotes, see the alternative below.
+
+            var existingNames = {};
+
+            window.CHANNEL.emotes.forEach(function (emote) {
+
+                if (
+                    emote &&
+                    typeof emote.name === "string"
+                ) {
+                    existingNames[emote.name] = true;
+                }
+            });
+
+
+            validEmotes.forEach(function (emote) {
+
+                if (!existingNames[emote.name]) {
+
+                    window.CHANNEL.emotes.push({
+                        name: emote.name,
+                        image: emote.image
+                    });
+
+                    existingNames[emote.name] = true;
+                }
+            });
+
+
+            // ====================================================
+            // REBUILD THE EMOTE REGEX
+            // ====================================================
+
+            rebuildEmoteRegex();
+
+
+            // ====================================================
+            // UPDATE EMOTE UI
+            // ====================================================
+
+            refreshEmoteUI();
+
+
+            console.log(
+                "[Holyplex] Loaded " +
+                validEmotes.length +
+                " external emotes."
+            );
+
+        })
+
+        .catch(function (error) {
+
+            console.error(
+                "[Holyplex] Failed to load external emotes:",
+                error
+            );
+
+        });
+    }
+
+
+    // ============================================================
+    // REBUILD CYTUBE EMOTE REGEX
+    // ============================================================
+
+    function rebuildEmoteRegex() {
+
+        if (
+            !window.CHANNEL ||
+            !Array.isArray(window.CHANNEL.emotes)
+        ) {
+            return;
+        }
+
+        window.CHANNEL.emotes.forEach(function (emote) {
+
+            if (
+                !emote ||
+                typeof emote.name !== "string"
+            ) {
+                return;
+            }
+
+            /*
+             * Escape characters that have special meaning in regex.
+             */
+            var escaped = emote.name.replace(
+                /[.*+?^${}()|[\]\\]/g,
+                "\\$&"
+            );
+
+            /*
+             * Match the emote as a separate word.
+             *
+             * This prevents:
+             *
+             * GIGAPOG
+             *
+             * from replacing part of:
+             *
+             * MYGIGAPOGTEST
+             */
+            emote.regex = new RegExp(
+                "(^|\\s)" + escaped + "(?=\\s|$)",
+                "g"
+            );
+
+            emote.source = escaped;
+        });
+    }
+
+
+    // ============================================================
+    // REFRESH CYTUBE'S EMOTE BUTTON / LIST
+    // ============================================================
+
+    function refreshEmoteUI() {
+
+        /*
+         * CyTube's normal emote list is generated when the
+         * interface is opened.
+         *
+         * Closing/reopening the emote panel will therefore
+         * pick up CHANNEL.emotes.
+         */
+
+        try {
+
+            if (
+                window.CyTube &&
+                CyTube.chatTabCompleteData
+            ) {
+
+                /*
+                 * Clear autocomplete context so the next
+                 * autocomplete operation sees the new list.
+                 */
+
+                CyTube.chatTabCompleteData.context = {};
+            }
+
+        } catch (e) {
+            console.warn(
+                "[Holyplex] Could not refresh autocomplete:",
+                e
+            );
+        }
+    }
+
+
+    // ============================================================
+    // WAIT UNTIL CYTUBE HAS FINISHED INITIALISING
+    // ============================================================
+
+    function start() {
+
+        if (
+            window.CHANNEL &&
+            Array.isArray(window.CHANNEL.emotes)
+        ) {
+
+            loadExternalEmotes();
+
+        } else {
+
+            /*
+             * CHANNEL may not exist yet when the custom JS
+             * initially executes.
+             */
+
+            setTimeout(start, 500);
+        }
+    }
+
+
+    start();
+
+})();
