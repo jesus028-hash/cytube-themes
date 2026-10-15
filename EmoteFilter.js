@@ -1,11 +1,10 @@
-
-////V1
+////V2
 (function () {
     if (window.__emoteSortFull) return;
     window.__emoteSortFull = true;
 
     var ENRICHED_URL =
-        "https://cdn.jsdelivr.net/gh/jesus028-hash/Emotelist@main/emotes-enriched.json";
+        "https://github.com/jesus028-hash/Emotelist/blob/main/master-enriched.json?=v1";
 
     var metaByName = Object.create(null);
     var sourceList = [];
