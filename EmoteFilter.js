@@ -4,7 +4,7 @@
     window.__emoteSortFull = true;
 
     var ENRICHED_URL =
-        "https://github.com/jesus028-hash/Emotelist/blob/main/master-enriched.json?=v1";
+        "https://github.com/jesus028-hash/Emotelist/blob/main/master-enriched.json?=v2";
 
     var metaByName = Object.create(null);
     var sourceList = [];
