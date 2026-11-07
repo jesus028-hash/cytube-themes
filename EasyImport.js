@@ -5,7 +5,7 @@
   var EMOTE_LIST_URL =
     "https://raw.githubusercontent.com/jesus028-hash/Emotelist/refs/heads/main/The-Kinoplex.txt";
 
-  var MIN_RANK = 2;
+  var MIN_RANK = 3;
 
   function canImport() {
     try {
