@@ -1,10 +1,12 @@
 (function () {
-  if (window.__remoteEmoteMergeV5) return;
-  window.__remoteEmoteMergeV5 = true;
+  if (window.__remoteEmoteMergeV6) return;
+  window.__remoteEmoteMergeV6 = true;
 
+  // Remote list (loaded first)
   var EMOTE_LIST_URL =
     "https://raw.githubusercontent.com/jesus028-hash/Emotelist/main/Robert+Multiplex_combined.txt";
-  var MIN_RANK = 2;
+
+  var MIN_RANK = 2; // mod+
 
   function canImport() {
     try {
@@ -29,7 +31,6 @@
         ? e.source.trim()
         : escapeRe(name);
 
-    // Server / loadEmotes need a valid regex string
     try {
       new RegExp(source, "gi");
     } catch (_) {
@@ -46,14 +47,32 @@
       var p = packEmote(e);
       if (!p) return;
       var key = p.name.toLowerCase();
-      if (seen[key]) return; // only drop true duplicates
+      if (seen[key]) return;
       seen[key] = true;
       out.push(p);
     });
     return out;
   }
 
-  // Prefer full list, not a filtered sort view
+  // Remote first, channel-only names last
+  function mergeLists(existing, incoming) {
+    var byName = Object.create(null);
+    var out = [];
+
+    function add(e) {
+      var p = packEmote(e);
+      if (!p) return;
+      var key = p.name.toLowerCase();
+      if (byName[key]) return;
+      byName[key] = true;
+      out.push(p);
+    }
+
+    (incoming || []).forEach(add); // remote → front
+    (existing || []).forEach(add); // local-only → end
+    return out;
+  }
+
   function currentEmotes() {
     if (window.__emoteSortOriginal && Array.isArray(window.__emoteSortOriginal)) {
       return window.__emoteSortOriginal.slice();
@@ -62,11 +81,6 @@
       return CHANNEL.emotes.slice();
     }
     return [];
-  }
-
-  function mergeLists(existing, incoming) {
-    // existing first → channel keeps its images on name clash
-    return packList([].concat(existing || [], incoming || []));
   }
 
   function applyLocal(list) {
@@ -118,21 +132,19 @@
         var remote = packList(JSON.parse(text));
         var combined = mergeLists(beforePacked, remote);
 
-        var droppedLocal = beforeRaw.length - beforePacked.length;
-        var added = combined.length - beforePacked.length;
-
         applyLocal(combined);
         importOfficial(combined);
 
         alert(
-          "Merge done\n" +
-            "Channel before: " + beforeRaw.length +
-            "\nValid kept: " + beforePacked.length +
-            (droppedLocal ? " (skipped " + droppedLocal + " invalid/duplicate)" : "") +
-            "\nRemote: " + remote.length +
-            "\nNew names added: " + added +
-            "\nTotal sent: " + combined.length +
-            "\n\nIf the live count is still lower, the server rejected some rows."
+          "Merged (remote first)\n" +
+            "Was on channel: " +
+            beforePacked.length +
+            "\nRemote: " +
+            remote.length +
+            "\nChannel-only at end: " +
+            (combined.length - remote.length) +
+            "\nTotal: " +
+            combined.length
         );
       })
       .catch(function (err) {
@@ -143,7 +155,6 @@
   window.__mergeRemoteEmotes = runMerge;
   window.__importRemoteEmotes = runMerge;
 
-  // --- icon button (theme-matched) ---
   var ICON_SVG =
     '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">' +
     '<path d="M12 3v10" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>' +
@@ -199,7 +210,7 @@
     var btn = document.createElement("button");
     btn.id = "btn-remote-emote-merge";
     btn.type = "button";
-    btn.title = "Merge remote emote list";
+    btn.title = "Merge remote emotes (remote first)";
     btn.innerHTML = ICON_SVG;
     copyThemeFrom(anchor, btn);
     btn.onclick = function (e) {
@@ -214,5 +225,5 @@
 
   placeButton();
   setInterval(placeButton, 2000);
-//v2
+  //v3
 })();
