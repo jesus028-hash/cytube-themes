@@ -3,7 +3,7 @@
   window.__remoteEmoteMergeV7 = true;
 
   var EMOTE_LIST_URL =
-    "https://raw.githubusercontent.com/jesus028-hash/Emotelist/main/Robert+Multiplex_combined.txt";
+    "https://raw.githubusercontent.com/jesus028-hash/Emotelist/refs/heads/main/The-Kinoplex.txt";
 
   var MIN_RANK = 2;
 
