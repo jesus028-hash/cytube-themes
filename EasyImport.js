@@ -1,9 +1,9 @@
 (function () {
-  if (window.__remoteEmoteMergeV4) return;
-  window.__remoteEmoteMergeV4 = true;
+  if (window.__remoteEmoteMergeV5) return;
+  window.__remoteEmoteMergeV5 = true;
 
   var EMOTE_LIST_URL =
-    "https://raw.githubusercontent.com/jesus028-hash/Emotelist/refs/heads/main/The-Kinoplex.txt";
+    "https://raw.githubusercontent.com/jesus028-hash/Emotelist/main/Robert+Multiplex_combined.txt";
   var MIN_RANK = 2;
 
   function canImport() {
@@ -18,45 +18,55 @@
     return String(s).replace(/[\\^$*+?.()|[\]{}]/g, "\\$&");
   }
 
-  function normalize(list) {
-    if (!Array.isArray(list)) return [];
-    var out = [];
-    for (var i = 0; i < list.length; i++) {
-      var e = list[i];
-      if (!e || !e.image) continue;
-      var name = String(e.name || "").trim();
-      if (!name) continue;
-      out.push({
-        name: name,
-        image: String(e.image).trim(),
-        source: escapeRe(name)
-      });
+  function packEmote(e) {
+    if (!e) return null;
+    var name = String(e.name || "").trim();
+    var image = String(e.image || "").trim();
+    if (!name || !image) return null;
+
+    var source =
+      typeof e.source === "string" && e.source.trim()
+        ? e.source.trim()
+        : escapeRe(name);
+
+    // Server / loadEmotes need a valid regex string
+    try {
+      new RegExp(source, "gi");
+    } catch (_) {
+      source = escapeRe(name);
     }
+
+    return { name: name, image: image, source: source };
+  }
+
+  function packList(list) {
+    var out = [];
+    var seen = Object.create(null);
+    (list || []).forEach(function (e) {
+      var p = packEmote(e);
+      if (!p) return;
+      var key = p.name.toLowerCase();
+      if (seen[key]) return; // only drop true duplicates
+      seen[key] = true;
+      out.push(p);
+    });
     return out;
+  }
+
+  // Prefer full list, not a filtered sort view
+  function currentEmotes() {
+    if (window.__emoteSortOriginal && Array.isArray(window.__emoteSortOriginal)) {
+      return window.__emoteSortOriginal.slice();
+    }
+    if (window.CHANNEL && Array.isArray(CHANNEL.emotes)) {
+      return CHANNEL.emotes.slice();
+    }
+    return [];
   }
 
   function mergeLists(existing, incoming) {
-    var byName = Object.create(null);
-    var out = [];
-    function add(e) {
-      var key = String(e.name).toLowerCase();
-      if (byName[key]) return;
-      byName[key] = true;
-      out.push({
-        name: e.name,
-        image: e.image,
-        source: e.source || escapeRe(e.name)
-      });
-    }
-    (existing || []).forEach(add);
-    (incoming || []).forEach(add);
-    return out;
-  }
-
-  function currentEmotes() {
-    return window.CHANNEL && Array.isArray(CHANNEL.emotes)
-      ? CHANNEL.emotes.slice()
-      : [];
+    // existing first → channel keeps its images on name clash
+    return packList([].concat(existing || [], incoming || []));
   }
 
   function applyLocal(list) {
@@ -95,8 +105,9 @@
       alert("Only mods can import emotes.");
       return;
     }
-    var before = currentEmotes();
-    var beforeCount = before.length;
+
+    var beforeRaw = currentEmotes();
+    var beforePacked = packList(beforeRaw);
 
     fetch(EMOTE_LIST_URL + "?t=" + Date.now(), { cache: "no-store", mode: "cors" })
       .then(function (r) {
@@ -104,19 +115,24 @@
         return r.text();
       })
       .then(function (text) {
-        var remote = normalize(JSON.parse(text));
-        var combined = mergeLists(before, remote);
+        var remote = packList(JSON.parse(text));
+        var combined = mergeLists(beforePacked, remote);
+
+        var droppedLocal = beforeRaw.length - beforePacked.length;
+        var added = combined.length - beforePacked.length;
+
         applyLocal(combined);
         importOfficial(combined);
+
         alert(
-          "Merged\nWas: " +
-            beforeCount +
-            "\nRemote: " +
-            remote.length +
-            "\nAdded: " +
-            (combined.length - beforeCount) +
-            "\nTotal: " +
-            combined.length
+          "Merge done\n" +
+            "Channel before: " + beforeRaw.length +
+            "\nValid kept: " + beforePacked.length +
+            (droppedLocal ? " (skipped " + droppedLocal + " invalid/duplicate)" : "") +
+            "\nRemote: " + remote.length +
+            "\nNew names added: " + added +
+            "\nTotal sent: " + combined.length +
+            "\n\nIf the live count is still lower, the server rejected some rows."
         );
       })
       .catch(function (err) {
@@ -127,16 +143,12 @@
   window.__mergeRemoteEmotes = runMerge;
   window.__importRemoteEmotes = runMerge;
 
-  // Stroke uses currentColor → follows theme / parent button color
+  // --- icon button (theme-matched) ---
   var ICON_SVG =
-    '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" ' +
-    'xmlns="http://www.w3.org/2000/svg" aria-hidden="true">' +
+    '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">' +
     '<path d="M12 3v10" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>' +
-    '<path d="M8 9l4 4 4-4" stroke="currentColor" stroke-width="1.8" ' +
-    'stroke-linecap="round" stroke-linejoin="round"/>' +
-    '<path d="M5 17.5c0 1.4 1.6 2.5 4 2.5h6c2.4 0 4-1.1 4-2.5S17.4 15 15 15h-.5' +
-    'A5 5 0 0 0 5.5 13.2 3.2 3.2 0 0 0 5 17.5z" ' +
-    'stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>' +
+    '<path d="M8 9l4 4 4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>' +
+    '<path d="M5 17.5c0 1.4 1.6 2.5 4 2.5h6c2.4 0 4-1.1 4-2.5S17.4 15 15 15h-.5A5 5 0 0 0 5.5 13.2 3.2 3.2 0 0 0 5 17.5z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>' +
     "</svg>";
 
   function findGifButton() {
@@ -156,37 +168,24 @@
   }
 
   function copyThemeFrom(anchor, btn) {
-    // Reuse the same classes as the neighboring control when possible
-    if (anchor.className) {
-      btn.className = anchor.className;
-    }
-
+    if (anchor.className) btn.className = anchor.className;
     var cs = window.getComputedStyle(anchor);
-
     btn.style.display = "inline-flex";
     btn.style.alignItems = "center";
     btn.style.justifyContent = "center";
     btn.style.verticalAlign = "middle";
-    btn.style.flexShrink = "0";
     btn.style.marginLeft = "6px";
     btn.style.cursor = "pointer";
     btn.style.boxSizing = "border-box";
-
-    // Size / shape from the theme button
-    var w = cs.width;
-    var h = cs.height;
-    if (w && w !== "auto") btn.style.width = w;
-    if (h && h !== "auto") btn.style.height = h;
-    btn.style.minWidth = cs.minWidth;
-    btn.style.minHeight = cs.minHeight;
+    if (cs.width && cs.width !== "auto") btn.style.width = cs.width;
+    if (cs.height && cs.height !== "auto") btn.style.height = cs.height;
     btn.style.padding = cs.padding;
     btn.style.border = cs.border;
     btn.style.borderRadius = cs.borderRadius;
     btn.style.background = cs.background;
     btn.style.backgroundColor = cs.backgroundColor;
     btn.style.boxShadow = cs.boxShadow;
-    btn.style.color = cs.color; // SVG currentColor follows this
-    btn.style.opacity = cs.opacity;
+    btn.style.color = cs.color;
   }
 
   function placeButton() {
@@ -201,24 +200,19 @@
     btn.id = "btn-remote-emote-merge";
     btn.type = "button";
     btn.title = "Merge remote emote list";
-    btn.setAttribute("aria-label", "Merge remote emotes");
     btn.innerHTML = ICON_SVG;
-
     copyThemeFrom(anchor, btn);
-
     btn.onclick = function (e) {
       e.preventDefault();
       e.stopPropagation();
       runMerge();
     };
 
-    if (anchor.nextSibling) {
-      anchor.parentNode.insertBefore(btn, anchor.nextSibling);
-    } else {
-      anchor.parentNode.appendChild(btn);
-    }
+    if (anchor.nextSibling) anchor.parentNode.insertBefore(btn, anchor.nextSibling);
+    else anchor.parentNode.appendChild(btn);
   }
 
   placeButton();
   setInterval(placeButton, 2000);
+//v2
 })();
