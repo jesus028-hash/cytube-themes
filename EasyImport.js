@@ -1,6 +1,6 @@
 (function () {
-  if (window.__remoteEmoteMergeV7) return;
-  window.__remoteEmoteMergeV7 = true;
+  if (window.__remoteEmoteMergeV8) return;
+  window.__remoteEmoteMergeV8 = true;
 
   var EMOTE_LIST_URL =
     "https://raw.githubusercontent.com/jesus028-hash/Emotelist/refs/heads/main/The-Kinoplex.txt";
@@ -49,6 +49,18 @@
       if (seen[key]) return;
       seen[key] = true;
       out.push(p);
+    });
+    return out;
+  }
+
+  // Backup / export format: only {name, image}
+  function toExportFormat(list) {
+    var out = [];
+    (list || []).forEach(function (e) {
+      var name = String((e && e.name) || "").trim();
+      var image = String((e && e.image) || "").trim();
+      if (!name || !image) return;
+      out.push({ name: name, image: image });
     });
     return out;
   }
@@ -134,7 +146,8 @@
   }
 
   function downloadBackup(list, label) {
-    var text = JSON.stringify(list);
+    var exportList = toExportFormat(list);
+    var text = JSON.stringify(exportList);
     var blob = new Blob([text], { type: "application/json;charset=utf-8" });
     var a = document.createElement("a");
     var name =
@@ -157,11 +170,12 @@
 
   function saveLocalBackup(list) {
     try {
+      var exportList = toExportFormat(list);
       var payload = {
         savedAt: new Date().toISOString(),
         channel: (window.CHANNEL && CHANNEL.name) || "",
-        count: list.length,
-        emotes: list
+        count: exportList.length,
+        emotes: exportList
       };
       localStorage.setItem("cytubeEmoteBackupLatest", JSON.stringify(payload));
       localStorage.setItem(
@@ -231,11 +245,11 @@
       }
     }
 
-    // 1) Backup first
+    // 1) Backup first (plain {name, image} format)
     var fileName = downloadBackup(beforePacked, "before-merge");
     var localOk = saveLocalBackup(beforePacked);
 
-    // 2) Fetch remote + merge (remote first)
+    // 2) Fetch + merge (remote first)
     fetch(EMOTE_LIST_URL + "?t=" + Date.now(), { cache: "no-store", mode: "cors" })
       .then(function (r) {
         if (!r.ok) throw new Error("HTTP " + r.status);
@@ -253,7 +267,8 @@
             (localOk ? " (file + browser)" : " (file only)") +
             "\nFile: " +
             fileName +
-            "\n\nMerged (remote first)\n" +
+            "\nFormat: [{name, image}, ...]\n\n" +
+            "Merged (remote first)\n" +
             "Was on channel: " +
             beforePacked.length +
             "\nRemote: " +
@@ -347,5 +362,5 @@
 
   placeButton();
   setInterval(placeButton, 2000);
-  //v4
+  //v5
 })();
