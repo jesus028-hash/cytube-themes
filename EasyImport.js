@@ -1,12 +1,11 @@
 (function () {
-  if (window.__remoteEmoteMergeV6) return;
-  window.__remoteEmoteMergeV6 = true;
+  if (window.__remoteEmoteMergeV7) return;
+  window.__remoteEmoteMergeV7 = true;
 
-  // Remote list (loaded first)
   var EMOTE_LIST_URL =
-    "https://raw.githubusercontent.com/jesus028-hash/Emotelist/refs/heads/main/The-Kinoplex.txt";
+    "https://raw.githubusercontent.com/jesus028-hash/Emotelist/main/Robert+Multiplex_combined.txt";
 
-  var MIN_RANK = 2; // mod+
+  var MIN_RANK = 2;
 
   function canImport() {
     try {
@@ -54,7 +53,7 @@
     return out;
   }
 
-  // Remote first, channel-only names last
+  // Remote first, channel-only last
   function mergeLists(existing, incoming) {
     var byName = Object.create(null);
     var out = [];
@@ -68,8 +67,8 @@
       out.push(p);
     }
 
-    (incoming || []).forEach(add); // remote → front
-    (existing || []).forEach(add); // local-only → end
+    (incoming || []).forEach(add);
+    (existing || []).forEach(add);
     return out;
   }
 
@@ -114,6 +113,104 @@
     return false;
   }
 
+  function timestamp() {
+    var d = new Date();
+    function z(n) {
+      return (n < 10 ? "0" : "") + n;
+    }
+    return (
+      d.getFullYear() +
+      "-" +
+      z(d.getMonth() + 1) +
+      "-" +
+      z(d.getDate()) +
+      "_" +
+      z(d.getHours()) +
+      "-" +
+      z(d.getMinutes()) +
+      "-" +
+      z(d.getSeconds())
+    );
+  }
+
+  function downloadBackup(list, label) {
+    var text = JSON.stringify(list);
+    var blob = new Blob([text], { type: "application/json;charset=utf-8" });
+    var a = document.createElement("a");
+    var name =
+      "emote-backup-" +
+      (label || "channel") +
+      "-" +
+      timestamp() +
+      ".json";
+    a.href = URL.createObjectURL(blob);
+    a.download = name;
+    a.style.display = "none";
+    document.body.appendChild(a);
+    a.click();
+    setTimeout(function () {
+      URL.revokeObjectURL(a.href);
+      if (a.parentNode) a.parentNode.removeChild(a);
+    }, 1000);
+    return name;
+  }
+
+  function saveLocalBackup(list) {
+    try {
+      var payload = {
+        savedAt: new Date().toISOString(),
+        channel: (window.CHANNEL && CHANNEL.name) || "",
+        count: list.length,
+        emotes: list
+      };
+      localStorage.setItem("cytubeEmoteBackupLatest", JSON.stringify(payload));
+      localStorage.setItem(
+        "cytubeEmoteBackup_" + timestamp(),
+        JSON.stringify(payload)
+      );
+      return true;
+    } catch (e) {
+      console.warn("[emote-merge] localStorage backup failed", e);
+      return false;
+    }
+  }
+
+  window.__restoreEmoteBackup = function () {
+    if (!canImport()) {
+      alert("Only mods can restore.");
+      return;
+    }
+    try {
+      var raw = localStorage.getItem("cytubeEmoteBackupLatest");
+      if (!raw) {
+        alert("No local backup found.");
+        return;
+      }
+      var data = JSON.parse(raw);
+      var list = packList(data.emotes || []);
+      if (!list.length) {
+        alert("Backup was empty.");
+        return;
+      }
+      if (
+        !confirm(
+          "Restore backup from " +
+            (data.savedAt || "?") +
+            "\n" +
+            list.length +
+            " emotes?\nThis replaces the current channel list."
+        )
+      ) {
+        return;
+      }
+      applyLocal(list);
+      importOfficial(list);
+      alert("Restored " + list.length + " emotes from local backup.");
+    } catch (e) {
+      alert("Restore failed: " + (e.message || e));
+    }
+  };
+
   function runMerge() {
     if (!canImport()) {
       alert("Only mods can import emotes.");
@@ -123,6 +220,22 @@
     var beforeRaw = currentEmotes();
     var beforePacked = packList(beforeRaw);
 
+    if (!beforePacked.length) {
+      if (
+        !confirm(
+          "Channel emote list looks empty (0).\n" +
+            "Merging may replace with remote only.\nContinue anyway?"
+        )
+      ) {
+        return;
+      }
+    }
+
+    // 1) Backup first
+    var fileName = downloadBackup(beforePacked, "before-merge");
+    var localOk = saveLocalBackup(beforePacked);
+
+    // 2) Fetch remote + merge (remote first)
     fetch(EMOTE_LIST_URL + "?t=" + Date.now(), { cache: "no-store", mode: "cors" })
       .then(function (r) {
         if (!r.ok) throw new Error("HTTP " + r.status);
@@ -136,19 +249,28 @@
         importOfficial(combined);
 
         alert(
-          "Merged (remote first)\n" +
+          "Backup saved" +
+            (localOk ? " (file + browser)" : " (file only)") +
+            "\nFile: " +
+            fileName +
+            "\n\nMerged (remote first)\n" +
             "Was on channel: " +
             beforePacked.length +
             "\nRemote: " +
             remote.length +
             "\nChannel-only at end: " +
-            (combined.length - remote.length) +
+            Math.max(0, combined.length - remote.length) +
             "\nTotal: " +
-            combined.length
+            combined.length +
+            "\n\nRestore last browser backup:\n__restoreEmoteBackup()"
         );
       })
       .catch(function (err) {
-        alert("Merge failed: " + (err.message || err));
+        alert(
+          "Merge failed: " +
+            (err.message || err) +
+            "\n\nBackup should still be on disk / localStorage."
+        );
       });
   }
 
@@ -210,7 +332,7 @@
     var btn = document.createElement("button");
     btn.id = "btn-remote-emote-merge";
     btn.type = "button";
-    btn.title = "Merge remote emotes (remote first)";
+    btn.title = "Backup channel emotes, then merge remote list (remote first)";
     btn.innerHTML = ICON_SVG;
     copyThemeFrom(anchor, btn);
     btn.onclick = function (e) {
@@ -225,5 +347,5 @@
 
   placeButton();
   setInterval(placeButton, 2000);
-  //v3
+  //v4
 })();
