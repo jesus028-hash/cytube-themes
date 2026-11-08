@@ -1,15 +1,15 @@
-////V5 complete — sort/filter + admin grid/table drag + importEmotes save
+////V6 complete — filter/sort + multi-select drag + importEmotes
 (function () {
     if (window.__emoteSortFull) return;
     window.__emoteSortFull = true;
 
     var ENRICHED_URL =
-        "https://jesus028-hash.github.io/Emotelist/master-enriched.json?v=5";
+        "https://jesus028-hash.github.io/Emotelist/master-enriched.json?v=6";
 
     var metaByName = Object.create(null);
     var sourceList = [];
     var metaReady = false;
-    var controlsReady = false;
+    var controlscontrolsReady = false;
     var defaultApplied = false;
     var advancedToggleReady = false;
     var selectedSources = [];
@@ -20,6 +20,7 @@
     var sourceIndex = Object.create(null);
     var dragEnabled = false;
     var dragFrom = null;
+    var selectedNames = Object.create(null);
 
     function norm(name) {
         return String(name || "").trim().toLowerCase();
@@ -94,7 +95,6 @@
         window.__emoteSortActive = true;
         window.__emoteSortView = list.slice();
         EMOTELIST.sortAlphabetical = false;
-        EMOTELIST.page = 0;
         try {
             if (EMOTELIST.searchbar) EMOTELIST.searchbar.val("");
             var search = document.querySelector("input.emotelist-search");
@@ -102,19 +102,17 @@
         } catch (_) {}
         EMOTELIST.handleChange();
         console.log("[emote-sort] applied", list.length, "mode:", sortMode);
-        if (dragEnabled) {
-            setTimeout(function () {
-                enableEmoteDrag(true);
-            }, 300);
-        }
+        setTimeout(function () {
+            stampTileNames();
+            if (dragEnabled) enableEmoteDrag(true);
+            paintSelection();
+        }, 300);
         return true;
     }
 
     function sortEmotes(list) {
         var result = list.slice();
-        if (sortMode === "custom") {
-            return result;
-        }
+        if (sortMode === "custom") return result;
         if (sortMode === "plex") {
             result.sort(function (a, b) {
                 var sa = metaFor(a.name).source;
@@ -195,7 +193,7 @@
                 "Replace the channel emote list with this order?\n\n" +
                     list.length +
                     " emotes will be imported.\n" +
-                    "Export a backup in Channel Settings first if unsure."
+                    "Export a backup first if unsure."
             )
         ) {
             return;
@@ -205,27 +203,116 @@
         window.__emoteSortActive = false;
         window.__emoteSortView = null;
         originalOrder = [];
+        sortMode = "date";
         setTimeout(function () {
             rememberOriginalOrder();
             refreshList();
         }, 600);
     }
 
+    function stampTileNames() {
+        var root = document.querySelector("#emotelist");
+        if (!root || !window.__emoteSortView) return;
+        var list = window.__emoteSortView;
+        var imgs = root.querySelectorAll("img");
+        var page = typeof EMOTELIST.page === "number" ? EMOTELIST.page : 0;
+        var per =
+            EMOTELIST._itemsPerPage ||
+            EMOTELIST.itemsPerPage ||
+            imgs.length ||
+            25;
+        var start = page * per;
+        Array.prototype.forEach.call(imgs, function (img, i) {
+            var em = list[start + i];
+            if (!em) return;
+            img.setAttribute("data-emote-name", em.name);
+            var el =
+                img.closest("a, button, .emote, [data-name], td, li, div") ||
+                img;
+            el.setAttribute("data-emote-name", em.name);
+        });
+    }
+
     function nameFromNode(node) {
         if (!node) return "";
-        if (node.getAttribute) {
-            var dn = node.getAttribute("data-name");
-            if (dn) return dn.trim();
-        }
+        var n =
+            node.getAttribute && node.getAttribute("data-emote-name");
+        if (n) return n.trim();
         if (node.tagName === "IMG") {
+            n = node.getAttribute("data-emote-name");
+            if (n) return n.trim();
             return (node.title || node.alt || "").trim();
         }
         var img = node.querySelector && node.querySelector("img");
-        if (img) return (img.title || img.alt || "").trim();
+        if (img) {
+            n = img.getAttribute("data-emote-name");
+            if (n) return n.trim();
+            return (img.title || img.alt || "").trim();
+        }
         var code = node.querySelector && node.querySelector("code");
         if (code) return code.textContent.trim();
-        if (node.cells && node.cells[1]) return node.cells[1].textContent.trim();
         return "";
+    }
+
+    function clearSelection() {
+        selectedNames = Object.create(null);
+        paintSelection();
+    }
+
+    function toggleSelect(name, additive) {
+        name = norm(name);
+        if (!name) return;
+        if (!additive) {
+            selectedNames = Object.create(null);
+            selectedNames[name] = true;
+        } else if (selectedNames[name]) {
+            delete selectedNames[name];
+        } else {
+            selectedNames[name] = true;
+        }
+        paintSelection();
+    }
+
+    function paintSelection() {
+        var root = document.querySelector("#emotelist");
+        if (!root) return;
+        Array.prototype.forEach.call(root.querySelectorAll("img"), function (img) {
+            var el =
+                img.closest("a, button, .emote, td, li, div") || img;
+            var n = norm(nameFromNode(el));
+            el.style.outline = selectedNames[n] ? "2px solid #ffd700" : "";
+        });
+    }
+
+    function moveSelectionTo(targetName) {
+        targetName = norm(targetName);
+        var list = (window.__emoteSortView || getFilteredEmotes()).slice();
+        var keys = Object.keys(selectedNames);
+        if (!keys.length) return false;
+
+        var moving = [];
+        var rest = [];
+        list.forEach(function (e) {
+            if (selectedNames[norm(e.name)]) moving.push(e);
+            else rest.push(e);
+        });
+        if (!moving.length) return false;
+
+        var insertAt = rest.findIndex(function (e) {
+            return norm(e.name) === targetName;
+        });
+        if (insertAt < 0) insertAt = rest.length;
+
+        var next = rest.slice(0, insertAt).concat(moving, rest.slice(insertAt));
+        sortMode = "custom"; // do not let date/plex resort after drag
+        applyList(next);
+        console.log(
+            "[emote-sort] moved",
+            moving.length,
+            "→ before",
+            targetName
+        );
+        return true;
     }
 
     function clearDragHandlers(el) {
@@ -234,22 +321,42 @@
         el.ondragover = null;
         el.ondrop = null;
         el.ondragend = null;
+        el.ondragleave = null;
+        el.onclick = null;
         el.style.cursor = "";
         el.style.opacity = "";
-        el.style.outline = "";
+        if (!selectedNames[norm(nameFromNode(el))]) {
+            el.style.outline = "";
+        }
     }
 
     function bindDragItem(el) {
         el.draggable = true;
         el.style.cursor = "grab";
 
+        el.onclick = function (e) {
+            if (!dragEnabled || !isStaff()) return;
+            e.preventDefault();
+            e.stopPropagation();
+            toggleSelect(nameFromNode(el), e.ctrlKey || e.metaKey);
+        };
+
         el.ondragstart = function (e) {
             dragFrom = el;
             el.style.opacity = "0.45";
             var n = nameFromNode(el);
+            if (!Object.keys(selectedNames).length) {
+                selectedNames = Object.create(null);
+                if (n) selectedNames[norm(n)] = true;
+                paintSelection();
+            } else if (n && !selectedNames[norm(n)]) {
+                selectedNames = Object.create(null);
+                selectedNames[norm(n)] = true;
+                paintSelection();
+            }
             if (e.dataTransfer) {
                 e.dataTransfer.effectAllowed = "move";
-                e.dataTransfer.setData("text/plain", n);
+                e.dataTransfer.setData("text/plain", n || "");
             }
         };
         el.ondragend = function () {
@@ -258,61 +365,42 @@
         };
         el.ondragover = function (e) {
             e.preventDefault();
-            el.style.outline = "2px dashed #c9a227";
+            el.style.boxShadow = "0 0 0 2px #c9a227";
         };
         el.ondragleave = function () {
-            el.style.outline = "";
+            el.style.boxShadow = "";
         };
         el.ondrop = function (e) {
             e.preventDefault();
-            el.style.outline = "";
+            el.style.boxShadow = "";
             if (!dragFrom || dragFrom === el) return;
-
-            var list = (window.__emoteSortView || getFilteredEmotes()).slice();
-            var fromName = norm(nameFromNode(dragFrom));
-            var toName = norm(nameFromNode(el));
-            if (!fromName || !toName) {
-                console.warn("[emote-sort] drag: missing names", fromName, toName);
+            var target = nameFromNode(el);
+            if (!target) {
+                console.warn("[emote-sort] drop: no target name");
                 return;
             }
-            var fromIndex = -1;
-            var toIndex = -1;
-            list.forEach(function (em, i) {
-                if (norm(em.name) === fromName) fromIndex = i;
-                if (norm(em.name) === toName) toIndex = i;
-            });
-            if (fromIndex < 0 || toIndex < 0 || fromIndex === toIndex) {
-                console.warn("[emote-sort] drag: index fail", fromName, toName);
-                return;
-            }
-            var item = list.splice(fromIndex, 1)[0];
-            list.splice(toIndex, 0, item);
-            sortMode = "custom";
-            applyList(list);
+            moveSelectionTo(target);
         };
     }
 
     function enableEmoteDrag(on) {
         dragEnabled = !!on;
+        stampTileNames();
 
-        var table = document.querySelector(
-            "#emotelist table.emotelist-table tbody, .emotelist-table tbody"
-        );
-        if (table) {
+        var root = document.querySelector("#emotelist");
+        if (!root) {
+            console.warn("[emote-sort] #emotelist not found");
+            return;
+        }
+
+        var table = root.querySelector("table.emotelist-table tbody");
+        if (table && table.querySelectorAll("tr").length) {
             var rows = table.querySelectorAll("tr");
             Array.prototype.forEach.call(rows, function (row) {
                 if (!on) clearDragHandlers(row);
                 else bindDragItem(row);
             });
             console.log("[emote-sort] table drag", on ? "on" : "off", rows.length);
-            if (rows.length) return;
-        }
-
-        var root =
-            document.querySelector("#emotelist") ||
-            document.querySelector(".emotelist");
-        if (!root) {
-            console.warn("[emote-sort] emote list root not found");
             return;
         }
 
@@ -320,15 +408,16 @@
         var tiles = [];
         Array.prototype.forEach.call(imgs, function (img) {
             var el =
-                img.closest("a, button, .emote, [data-name], td, li, div") || img;
+                img.closest("a, button, .emote, [data-name], td, li, div") ||
+                img;
             if (tiles.indexOf(el) === -1) tiles.push(el);
         });
-
         tiles.forEach(function (el) {
             if (!on) clearDragHandlers(el);
             else bindDragItem(el);
         });
         console.log("[emote-sort] grid drag", on ? "on" : "off", tiles.length);
+        paintSelection();
     }
 
     function makeButton(text, callback) {
@@ -420,9 +509,7 @@
             }
         } catch (_) {}
         sourceList.forEach(function (source) {
-            if (plexOrder.indexOf(source) === -1) {
-                plexOrder.push(source);
-            }
+            if (plexOrder.indexOf(source) === -1) plexOrder.push(source);
         });
         rebuildSourceIndex();
     }
@@ -461,8 +548,7 @@
             "display:inline-flex;align-items:center;gap:5px;" +
             "margin:0 0 0 12px;padding:2px 6px;cursor:pointer;" +
             "font-weight:normal;white-space:nowrap;vertical-align:middle;" +
-            "flex:0 0 auto;min-width:max-content;max-width:none;" +
-            "overflow:visible;position:relative;z-index:2;";
+            "flex:0 0 auto;min-width:max-content;z-index:2;";
         var checkbox = document.createElement("input");
         checkbox.type = "checkbox";
         checkbox.checked = false;
@@ -478,21 +564,11 @@
         });
         if (anchor && anchor.parentElement) {
             var toggleParent = anchor.parentElement;
-            toggle.style.cssText +=
-                "display:inline-flex!important;position:static!important;" +
-                "flex-shrink:0!important;width:max-content!important;" +
-                "max-width:none!important;margin-left:16px!important;clear:none!important;";
             toggleParent.style.setProperty("overflow", "visible", "important");
             toggleParent.style.setProperty("flex-wrap", "wrap", "important");
-            toggleParent.style.setProperty("align-items", "center", "important");
             anchor.insertAdjacentElement("afterend", toggle);
         } else {
-            var tabs = document.querySelector(".nav-tabs, #emotelist-tabs, .nav");
-            if (tabs && tabs.parentElement) {
-                tabs.parentElement.insertBefore(toggle, tabs.nextSibling);
-            } else {
-                document.body.appendChild(toggle);
-            }
+            document.body.appendChild(toggle);
         }
         advancedToggleReady = true;
         return true;
@@ -530,8 +606,7 @@
         );
         host.id = "emote-sort-controls";
         host.style.cssText =
-            "display:inline-flex;align-items:center;gap:4px;" +
-            "position:relative;vertical-align:top;";
+            "display:inline-flex;align-items:center;gap:4px;position:relative;vertical-align:top;";
 
         var filter = makeDropdown("Show/Hide Plex", host);
         var filterChecks = [];
@@ -543,18 +618,13 @@
             filter.button.textContent =
                 count === sourceList.length
                     ? "Show/Hide Plex ▾"
-                    : "Show/Hide Plex (" +
-                      count +
-                      "/" +
-                      sourceList.length +
-                      ") ▾";
+                    : "Show/Hide Plex (" + count + "/" + sourceList.length + ") ▾";
         }
 
         sourceList.forEach(function (source) {
             var label = document.createElement("label");
             label.style.cssText =
-                "display:flex;align-items:center;gap:8px;padding:5px 3px;" +
-                "margin:0;cursor:pointer;font-weight:normal;white-space:nowrap;";
+                "display:flex;align-items:center;gap:8px;padding:5px 3px;margin:0;cursor:pointer;font-weight:normal;white-space:nowrap;";
             var checkbox = document.createElement("input");
             checkbox.type = "checkbox";
             checkbox.value = source;
@@ -569,6 +639,7 @@
                         return item.value;
                     });
                 updateFilterButton();
+                if (sortMode === "custom") sortMode = "date";
                 refreshList();
             });
             var t = document.createElement("span");
@@ -598,17 +669,6 @@
             updateFilterButton();
             refreshList();
         });
-        addMenuAction(filter.menu, "Show all", function () {
-            filterChecks.forEach(function (c) {
-                c.checked = true;
-            });
-            selectedSources = filterChecks.map(function (c) {
-                return c.value;
-            });
-            updateFilterButton();
-            refreshList();
-            filter.menu.style.display = "none";
-        });
         updateFilterButton();
 
         var plex = makeDropdown("Sort by Plex", host);
@@ -620,14 +680,10 @@
             plexOrder.forEach(function (source) {
                 var row = document.createElement("div");
                 row.draggable = true;
-                row.dataset.source = source;
                 row.style.cssText =
-                    "display:flex;align-items:center;gap:8px;padding:7px;" +
-                    "margin:4px 0;border:1px solid #555;border-radius:4px;" +
-                    "cursor:grab;user-select:none;";
+                    "display:flex;align-items:center;gap:8px;padding:7px;margin:4px 0;border:1px solid #555;border-radius:4px;cursor:grab;user-select:none;";
                 var grip = document.createElement("span");
                 grip.textContent = "☰";
-                grip.style.opacity = "0.7";
                 var name = document.createElement("span");
                 name.textContent = source;
                 name.style.flex = "1";
@@ -637,44 +693,26 @@
                     draggingSource = source;
                     row.style.opacity = "0.4";
                     if (event.dataTransfer) {
-                        event.dataTransfer.effectAllowed = "move";
                         event.dataTransfer.setData("text/plain", source);
                     }
                 });
                 row.addEventListener("dragend", function () {
                     row.style.opacity = "1";
-                    dragList.querySelectorAll("[data-drop-over]").forEach(
-                        function (item) {
-                            item.removeAttribute("data-drop-over");
-                            item.style.outline = "";
-                        }
-                    );
                     draggingSource = null;
                 });
                 row.addEventListener("dragover", function (event) {
                     event.preventDefault();
-                    if (draggingSource && draggingSource !== source) {
-                        row.style.outline = "2px dashed #aaa";
-                        row.dataset.dropOver = "true";
-                    }
-                });
-                row.addEventListener("dragleave", function () {
-                    row.style.outline = "";
-                    row.removeAttribute("data-drop-over");
                 });
                 row.addEventListener("drop", function (event) {
                     event.preventDefault();
-                    row.style.outline = "";
-                    row.removeAttribute("data-drop-over");
                     var from =
                         draggingSource ||
                         (event.dataTransfer &&
                             event.dataTransfer.getData("text/plain"));
                     var fromIndex = plexOrder.indexOf(from);
                     var toIndex = plexOrder.indexOf(source);
-                    if (fromIndex < 0 || toIndex < 0 || fromIndex === toIndex) {
+                    if (fromIndex < 0 || toIndex < 0 || fromIndex === toIndex)
                         return;
-                    }
                     plexOrder.splice(fromIndex, 1);
                     plexOrder.splice(toIndex, 0, from);
                     rebuildSourceIndex();
@@ -682,7 +720,6 @@
                     renderPlexOrder();
                     sortMode = "plex";
                     refreshList();
-                    plex.button.textContent = "Sort by Plex ▾";
                 });
                 dragList.appendChild(row);
             });
@@ -698,10 +735,10 @@
         });
         addMenuAction(plex.menu, "Reset sort order", function () {
             sortMode = "date";
+            clearSelection();
             selectedSources = sourceList.slice();
             filterChecks.forEach(function (checkbox) {
-                checkbox.checked =
-                    selectedSources.indexOf(checkbox.value) !== -1;
+                checkbox.checked = true;
             });
             updateFilterButton();
             refreshList();
@@ -711,6 +748,7 @@
         host.appendChild(
             makeButton("Newest", function () {
                 sortMode = "date";
+                clearSelection();
                 refreshList();
             })
         );
@@ -718,6 +756,7 @@
             makeButton("All", function () {
                 selectedSources = sourceList.slice();
                 sortMode = "date";
+                clearSelection();
                 filterChecks.forEach(function (checkbox) {
                     checkbox.checked = true;
                 });
@@ -732,7 +771,7 @@
                     enableEmoteDrag(!dragEnabled);
                     alert(
                         dragEnabled
-                            ? "Drag ON — drag emotes on this page, then Save order."
+                            ? "Drag ON.\n• Click = select\n• Ctrl+click = multi\n• Drag onto another emote to move\n• Then Save order"
                             : "Drag OFF"
                     );
                 })
@@ -748,7 +787,7 @@
         host.style.display = "none";
         placeAdvancedToggle(host);
         controlsReady = true;
-        console.log("[emote-sort] controls added after Favorites");
+        console.log("[emote-sort] controls added");
         return true;
     }
 
@@ -778,7 +817,6 @@
             return response.text();
         })
         .then(function (text) {
-            // tolerate trailing commas in bad exports
             var fixed = text.replace(/,\s*]/g, "]");
             var list = JSON.parse(fixed);
             var sources = Object.create(null);
@@ -816,33 +854,30 @@
     var retry = setInterval(function () {
         placeControls();
         applyDefaultWhenReady();
-        if (controlsReady && defaultApplied) {
-            clearInterval(retry);
-        }
+        if (controlsReady && defaultApplied) clearInterval(retry);
     }, 600);
 
-    function getEmoteSignature() {
-        return allEmotes()
-            .map(function (emote) {
-                return norm(emote.name);
+    var lastEmoteSignature = "";
+    setInterval(function () {
+        if (!metaReady || !window.CHANNEL || !Array.isArray(CHANNEL.emotes))
+            return;
+        var signature = allEmotes()
+            .map(function (e) {
+                return norm(e.name);
             })
             .join("|");
-    }
-
-    var lastEmoteSignature = getEmoteSignature();
-    setInterval(function () {
-        if (!metaReady || !window.CHANNEL || !Array.isArray(CHANNEL.emotes)) {
+        if (!lastEmoteSignature) {
+            lastEmoteSignature = signature;
             return;
         }
-        var signature = getEmoteSignature();
         if (signature !== lastEmoteSignature) {
             lastEmoteSignature = signature;
-            if (sortMode !== "custom") {
+            // Never auto-resort while user is arranging
+            if (sortMode !== "custom" && !dragEnabled) {
                 refreshList();
             }
-            console.log("[emote-sort] channel emote list changed");
         }
     }, 2000);
 
-    console.log("[emote-sort] ready v5-complete");
+    console.log("[emote-sort] ready v6-complete");
 })();
